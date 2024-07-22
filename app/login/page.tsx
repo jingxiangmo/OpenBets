@@ -103,7 +103,7 @@ export default function Login({
         </SubmitButton>
         <SubmitButton
           formAction={signUp}
-          className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2"
+          className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2 "
           pendingText="Signing Up..."
         >
           Sign Up
