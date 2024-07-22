@@ -10,12 +10,12 @@ const BetForm = () => {
   const [showAwayBet, setShowAwayBet] = useState(false);
   const [awayMoney, setAwayMoney] = useState("");
 
-  const handleButtonClick = (button) => {
+  const handleButtonClick = (button: any) => {
     setSelectedButton(button);
     // Handle any additional logic for button click, such as database entry
   };
 
-  const handleDateAddition = (days) => {
+  const handleDateAddition = (days: any) => {
     const currentDate = new Date();
     currentDate.setDate(currentDate.getDate() + days);
     setResolveBy(currentDate.toISOString().split("T")[0]);
