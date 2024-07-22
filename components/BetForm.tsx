@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { SignUpButton, SignedIn, SignOutButton } from "@clerk/nextjs";
+
 const BetForm = () => {
   const [topic, setTopic] = useState("");
   const [money, setMoney] = useState("");
@@ -163,13 +165,19 @@ const BetForm = () => {
           )}
         </div>
 
-        <button
-          type="button"
-          className="w-full my-5 h-12 bg-blue-500 text-white py-2 rounded-md mx-auto transition-transform duration-200 ease-in-out transform hover:shadow-lg hover:scale-105 active:scale-95"
-          onClick={() => (window.location.href = "/login")}
-        >
-          🤝 Signup to Bet
-        </button>
+        <SignUpButton>
+          <button
+            type="button"
+            className="w-full my-5 h-12 bg-blue-500 text-white py-2 rounded-md mx-auto transition-transform duration-200 ease-in-out transform hover:shadow-lg hover:scale-105 active:scale-95"
+            // onClick={() => (window.location.href = "/login")}
+          >
+            🤝 Signup to Bet
+          </button>
+        </SignUpButton>
+
+        <SignedIn>
+          <SignOutButton />
+        </SignedIn>
       </form>
     </div>
   );
