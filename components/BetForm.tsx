@@ -21,7 +21,7 @@ const BetForm = () => {
     setResolveBy(currentDate.toISOString().split("T")[0]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     // Handle form submission logic
     console.log({
