@@ -106,7 +106,7 @@ const BetForm = () => {
               onChange={(e) => setResolveBy(e.target.value)}
               className="p-2 mt-1 block w-full border rounded-md text-black placeholder-gray-100"
               required
-              style={{ color: resolveBy === "" ? "gray" : "black" }}
+              style={{ color: resolveBy === "" ? "#d3d3d3" : "black" }}
             />
 
             <div className="flex justify-between mt-2">
