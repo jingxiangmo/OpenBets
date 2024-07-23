@@ -5,6 +5,7 @@ import ConnectSupabaseSteps from "@/components/tutorial/ConnectSupabaseSteps";
 import SignUpUserSteps from "@/components/tutorial/SignUpUserSteps";
 import Header from "@/components/Header";
 import BetForm from "@/components/BetForm";
+import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 export default async function Index() {
   const canInitSupabaseClient = () => {
@@ -25,21 +26,17 @@ export default async function Index() {
       <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
         <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm">
           <p className="text-xl"> OpenBets </p>
-
-          {isSupabaseConnected && <AuthButton />}
         </div>
       </nav>
 
-      {/*
-      <div className="flex-1 flex flex-col gap-20 max-w-4xl px-3">
-        <Header />
-        <main className="flex-1 flex flex-col gap-6">
-          <h2 className="font-bold text-4xl mb-4">Next steps</h2>
-          {isSupabaseConnected ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-        </main>
-      </div> */}
-
       <BetForm />
+
+      <SignedIn>
+        <p> hello </p>
+
+      </SignedIn>
+
+
 
       <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
         <p>Made with ❤️ by Beau, JX, and Fraser</p>
