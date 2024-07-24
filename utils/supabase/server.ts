@@ -1,16 +1,34 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-import { ClerkSessionType, supabaseCreateClientGlobalParam } from "./common";
+import { auth } from "@clerk/nextjs/server";
 
-export const createClient = (session: ClerkSessionType) => {
+type ClerkAuthType = ReturnType<typeof auth>;
+
+export const createClient = (auth: ClerkAuthType) => {
   const cookieStore = cookies();
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      ...supabaseCreateClientGlobalParam(session),
+      global: {
+        fetch: async (url, options = {}) => {
+          const clerkToken = await auth.getToken({
+            template: "supabase",
+          });
+
+          // Insert the Clerk Supabase token into the headers
+          const headers = new Headers(options?.headers);
+          headers.set("Authorization", `Bearer ${clerkToken}`);
+
+          // Now call the default fetch
+          return fetch(url, {
+            ...options,
+            headers,
+          });
+        },
+      },
       cookies: {
         getAll() {
           return cookieStore.getAll();
