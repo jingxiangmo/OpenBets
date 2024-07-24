@@ -1,7 +1,10 @@
 import { useSession } from "@clerk/nextjs";
 
-export function supabaseCreateClientParams() {
-  const { session } = useSession();
+// type of a clerk session from useSession().session
+export type ClerkSessionType = ReturnType<typeof useSession>["session"];
+
+// create a global param for supabase client
+export function supabaseCreateClientGlobalParam(session: ClerkSessionType) {
   return {
     global: {
       // Get the custom Supabase token from Clerk

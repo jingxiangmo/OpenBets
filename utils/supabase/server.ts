@@ -1,16 +1,16 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-import { supabaseCreateClientParams } from "./common";
+import { ClerkSessionType, supabaseCreateClientGlobalParam } from "./common";
 
-export const createClient = () => {
+export const createClient = (session: ClerkSessionType) => {
   const cookieStore = cookies();
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      ...supabaseCreateClientParams(),
+      ...supabaseCreateClientGlobalParam(session),
       cookies: {
         getAll() {
           return cookieStore.getAll();
