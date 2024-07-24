@@ -4,7 +4,7 @@ import { useSession } from "@clerk/nextjs";
 // type of a clerk session from useSession().session
 export type ClerkSessionType = ReturnType<typeof useSession>["session"];
 
-export const createClient = (session: ClerkSessionType) =>
+export const createClerkSupabaseClient = (session: ClerkSessionType) =>
   createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

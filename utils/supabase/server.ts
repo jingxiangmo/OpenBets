@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 
 type ClerkAuthType = ReturnType<typeof auth>;
 
-export const createClient = (auth: ClerkAuthType) => {
+export const createClerkSupabaseClient = (auth: ClerkAuthType) => {
   const cookieStore = cookies();
 
   return createServerClient(
