@@ -8,6 +8,4 @@ export default async function SupabaseTest() {
   const stuff = await client.from("bet").select("*");
 
   console.log(stuff.data);
-
-  return <div>supabase test</div>
 }

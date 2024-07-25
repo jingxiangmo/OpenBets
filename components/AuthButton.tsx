@@ -1,9 +1,9 @@
-import { createClerkSupabaseClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function AuthButton() {
-  const supabase = createClerkSupabaseClient();
+  const supabase = createClient();
 
   const {
     data: { user },
@@ -12,7 +12,7 @@ export default async function AuthButton() {
   const signOut = async () => {
     "use server";
 
-    const supabase = createClerkSupabaseClient();
+    const supabase = createClient();
     await supabase.auth.signOut();
     return redirect("/login");
   };

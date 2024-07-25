@@ -6,6 +6,8 @@ import SignUpUserSteps from "@/components/tutorial/SignUpUserSteps";
 import Header from "@/components/Header";
 import BetForm from "@/components/BetForm";
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import PastBets from "@/components/PastBets";
+
 
 export default async function Index() {
   return (
@@ -18,13 +20,14 @@ export default async function Index() {
 
       <BetForm />
 
+      <PastBets />
+
       <SignedIn>
         <p> hello </p>
 
       </SignedIn>
 
-
-
+    
       <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
         <p>Made with ❤️ by Beau, JX, and Fraser</p>
       </footer>

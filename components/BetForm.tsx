@@ -11,6 +11,31 @@ const BetForm = () => {
   const [showAwayBet, setShowAwayBet] = useState(false);
   const [awayMoney, setAwayMoney] = useState("");
 
+  const cacheFormData = () => {
+    const formData = {
+      topic,
+      money,
+      resolveBy,
+      selectedButton,
+      awayMoney: showAwayBet ? awayMoney : null,
+    };
+    localStorage.setItem("betFormData", JSON.stringify(formData));
+  };
+
+  const handleSignIn = () => {
+    cacheFormData();
+    // Trigger sign-in process
+  };
+
+  const handleFormSubmit = () => {
+    const cachedData = localStorage.getItem("betFormData");
+    if (cachedData) {
+      const formData = JSON.parse(cachedData);
+      console.log(formData);
+      // Handle form submission logic with cached data
+    }
+  };
+
   const handleButtonClick = (button: any) => {
     setSelectedButton(button);
     // Handle any additional logic for button click, such as database entry
@@ -167,6 +192,7 @@ const BetForm = () => {
         <SignedIn>
           <button
             type="submit"
+            onClick={handleFormSubmit}
             className="w-full my-5 h-12 bg-blue-500 text-white py-2 rounded-md mx-auto transition-transform duration-200 ease-in-out transform hover:shadow-lg hover:scale-105 active:scale-95"
           >
             🤝 Open Bet
@@ -178,6 +204,7 @@ const BetForm = () => {
           <SignUpButton>
             <button
               type="button"
+              onClick={handleSignIn}
               className="w-full my-5 h-12 bg-blue-500 text-white py-2 rounded-md mx-auto transition-transform duration-200 ease-in-out transform hover:shadow-lg hover:scale-105 active:scale-95"
             >
               🤝 Signup to Bet
