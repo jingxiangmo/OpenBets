@@ -14,7 +14,8 @@ export default function Login({
 
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    const supabase = createClerkSupabaseClient();
+    const authState = auth();
+    const supabase = createClerkSupabaseClient(authState);
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -34,7 +35,8 @@ export default function Login({
     const origin = headers().get("origin");
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    const supabase = createClerkSupabaseClient();
+    const authState = auth(); // Add this line to get the auth state
+    const supabase = createClerkSupabaseClient(authState);
 
     const { error } = await supabase.auth.signUp({
       email,
