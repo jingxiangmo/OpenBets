@@ -17,14 +17,24 @@ interface BetCardProps {
 
 const BetCard: React.FC<BetCardProps> = ({ bet }) => {
   return (
-    <div className="bet-card">
-      <h2>{bet.title}</h2>
-      <p>Created At: {new Date(bet.created_at).toLocaleString()}</p>
-      <p>Resolve Condition: {bet.resolve_condition}</p>
-      <p>Resolve Deadline: {new Date(bet.resolve_deadline).toLocaleDateString()}</p>
+    <div className="bet-card p-4 border rounded shadow-sm">
+      <h2 className="text-xl font-bold">{bet.title}</h2>
+      <p className="text-sm text-gray-500">{bet.resolve_condition}</p>
+      <p className="mt-2">Resolve Deadline: {new Date(bet.resolve_deadline).toLocaleDateString()}</p>
       <p>Resolve Status: {bet.resolve_status}</p>
-      <p>Affirmative Users: {bet.affirmative_user_clerk_ids.join(', ')}</p>
-      <p>Negative Users: {bet.negative_user_clerk_ids.join(', ')}</p>
+      <div className="mt-4">
+        <h3 className="font-semibold">Users</h3>
+        <div className="flex justify-between">
+          <div>
+            <h4 className="font-semibold text-green-600">Yes</h4>
+            <p>{bet.affirmative_user_clerk_ids.join(', ')}</p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-red-600">No</h4>
+            <p>{bet.negative_user_clerk_ids.join(', ')}</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
