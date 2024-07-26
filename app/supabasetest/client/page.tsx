@@ -7,11 +7,51 @@ export default function SupabaseTest() {
   const { user } = useUser();
   const { session } = useSession();
 
+  // Ensure session token is available
+  if (!session) {
+    console.error("Session is not available");
+    return <div>Error: Session is not available</div>;
+  }
+
   const client = createClerkSupabaseClient(session);
 
-  // TODO: a bunch of the usual react shenanigans to pull data from the supabase client
-  // refer to this example, but call my createClerkSupabaseClient function imported above
-  // https://clerk.com/docs/integrations/databases/supabase#fetch-supabase-data-in-your-code
+  const [data, setData] = useState<any[]>([]);
 
-  return <div>supabase test</div>
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const stuff = await client.from("bet").select("*");
+        console.log(stuff.data);
+
+        const userId = user?.id;
+
+        const { data, error } = await client
+          .from('bet')
+          .insert(
+            {
+              title: "client test",
+              affirmative_user_clerk_ids: [userId],
+              affirmative_user_wagers: [100],
+              negative_user_clerk_ids: [userId],
+              negative_user_wagers: [100],
+            }
+          )
+          .select();
+
+        if (error) {
+          console.error("Error inserting data:", error);
+        } else {
+          setData(data);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    if (user && session) {
+      fetchData();
+    }
+  }, [user, session]);
+
+  return <div>client test</div>
 }

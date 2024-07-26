@@ -15,7 +15,7 @@ export default async function SupabaseTest() {
   .from('bet')
   .insert(
     {
-      title: "test",
+      title: "server test",
       affirmative_user_clerk_ids: [userId],
       affirmative_user_wagers: [100],
       negative_user_clerk_ids: [userId],
