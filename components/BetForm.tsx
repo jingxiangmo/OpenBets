@@ -77,10 +77,6 @@ const BetForm = () => {
     }
   };
 
-  if (!session) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="p-8 sm:w-3/4 md:w-2/3 lg:w-1/2">
       <h2 className="mb-8 text-4xl font-bold">Create a Bet</h2>
