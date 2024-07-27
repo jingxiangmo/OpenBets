@@ -84,5 +84,44 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
     fetchData();
   }, []);
 
-  return <div></div>;
+  return (
+  
+    <div>
+    {bets && (
+      <div className="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-4 text-center">{bets.title}</h1>
+        <p className="mb-2 text-lg"><strong>Resolve Condition:</strong> {bets.resolveCond}</p>
+        <p className="mb-2 text-lg"><strong>Odds:</strong> {bets.affirmativeBets.length} : {bets.negativeBets.length}</p>
+        <p className="mb-4 text-lg"><strong>Pot:</strong> ${bets.pot}</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h2 className="text-2xl font-semibold mb-2 text-center">Affirmative Bets</h2>
+            <ul className="list-disc list-inside bg-green-100 p-4 rounded-lg shadow-sm">
+              {bets.affirmativeBets.map((bet, index) => (
+                <li key={index} className="mb-1">
+                  <strong>User:</strong> {bet.username}, <strong>Wager:</strong> ${bet.wager}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-semibold mb-2 text-center">Negative Bets</h2>
+            <ul className="list-disc list-inside bg-red-100 p-4 rounded-lg shadow-sm">
+              {bets.negativeBets.map((bet, index) => (
+                <li key={index} className="mb-1">
+                  <strong>User:</strong> {bet.username}, <strong>Wager:</strong> ${bet.wager}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    )}
+
+
+    </div>
+
+  );
 }
