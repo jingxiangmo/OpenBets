@@ -1,6 +1,6 @@
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
-
+import { Analytics } from "@vercel/analytics/react"
 import { ClerkProvider } from "@clerk/nextjs";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -35,6 +35,7 @@ export default function RootLayout({
               </footer>
             </div>
           </main>
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
