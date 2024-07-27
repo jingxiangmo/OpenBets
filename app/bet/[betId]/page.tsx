@@ -124,12 +124,13 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
                 Affirmative Bets
               </h2>
               <ul className="rounded-lg bg-green-100 p-4">
-                {bets.affirmativeBets && bets.affirmativeBets.map((bet, index) => (
-                  <li key={index} className="mb-2">
-                    <strong>User:</strong> {bet.username},{" "}
-                    <strong>Wager:</strong> ${bet.wager.toFixed(2)}
-                  </li>
-                ))}
+                {bets.affirmativeBets &&
+                  bets.affirmativeBets.map((bet, index) => (
+                    <li key={index} className="mb-2">
+                      <strong>User:</strong> {bet.username},{" "}
+                      <strong>Wager:</strong> ${bet.wager.toFixed(2)}
+                    </li>
+                  ))}
               </ul>
             </div>
             <div>
@@ -137,12 +138,13 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
                 Negative Bets
               </h2>
               <ul className="rounded-lg bg-red-100 p-4">
-                {bets.negativeBets && bets.negativeBets.map((bet, index) => (
-                  <li key={index} className="mb-2">
-                    <strong>User:</strong> {bet.username},{" "}
-                    <strong>Wager:</strong> ${bet.wager.toFixed(2)}
-                  </li>
-                ))}
+                {bets.negativeBets &&
+                  bets.negativeBets.map((bet, index) => (
+                    <li key={index} className="mb-2">
+                      <strong>User:</strong> {bet.username},{" "}
+                      <strong>Wager:</strong> ${bet.wager.toFixed(2)}
+                    </li>
+                  ))}
               </ul>
             </div>
           </div>
