@@ -22,15 +22,15 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className={GeistSans.className}>
         <body className="bg-background text-foreground">
-          <main className="min-h-screen flex flex-col items-center">
-            <div className="flex-1 w-full flex flex-col gap-20 items-center">
-              <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-                <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm">
+          <main className="flex min-h-screen flex-col items-center">
+            <div className="flex w-full flex-1 flex-col items-center gap-20">
+              <nav className="flex h-16 w-full justify-center border-b border-b-foreground/10">
+                <div className="flex w-full max-w-4xl items-center justify-between p-3 text-sm">
                   <p className="text-xl"> OpenBets </p>
                 </div>
               </nav>
               {children}
-              <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
+              <footer className="flex w-full justify-center border-t border-t-foreground/10 p-8 text-center text-xs">
                 <p>Made with ❤️ by Beau, JX, and Fraser</p>
               </footer>
             </div>
