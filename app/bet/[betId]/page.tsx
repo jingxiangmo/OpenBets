@@ -2,6 +2,7 @@
 
 import { createBrowserClient } from "@supabase/ssr";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 interface BetInfo {
   username: string;
@@ -36,6 +37,8 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
 
       if (error) {
         // TODO: handle error
+        console.error("Error fetching bet data:", error);
+        return;
       }
 
       function sum(nums: number[]) {
@@ -46,28 +49,23 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
         sum(data.affirmative_user_wagers) + sum(data.negative_user_wagers);
 
       if (
-        data.affirmative_user_wagers.length !=
+        data.affirmative_user_wagers.length !==
           data.affirmative_user_clerk_ids.length ||
-        data.negative_user_wagers.length != data.negative_user_clerk_ids.length
+        data.negative_user_wagers.length !== data.negative_user_clerk_ids.length
       ) {
-        throw new Error("Mismatched user wager and clerk ID arrays");
+        console.error("Mismatched user wager and clerk ID arrays");
+        return;
       }
 
-      let affirmativeBets: BetInfo[] = [];
-      for (let i = 0; i < data.affirmative_user_wagers.length; i++) {
-        affirmativeBets.push({
-          username: data.affirmative_user_clerk_ids[i],
-          wager: data.affirmative_user_wagers[i],
-        });
-      }
+      let affirmativeBets: BetInfo[] = data.affirmative_user_wagers.map((wager, index) => ({
+        username: data.affirmative_user_clerk_ids[index],
+        wager: wager,
+      }));
 
-      let negativeBets: BetInfo[] = [];
-      for (let i = 0; i < data.negative_user_wagers.length; i++) {
-        negativeBets.push({
-          username: data.negative_user_clerk_ids[i],
-          wager: data.negative_user_wagers[i],
-        });
-      }
+      let negativeBets: BetInfo[] = data.negative_user_wagers.map((wager, index) => ({
+        username: data.negative_user_clerk_ids[index],
+        wager: wager,
+      }));
 
       const bets: BetsInfo = {
         title: data.title,
@@ -82,46 +80,53 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
     }
 
     fetchData();
-  }, []);
+  }, [supabase, params.betId]);
+
+  if (!bets) {
+    return <div>Loading...</div>;
+  }
 
   return (
-  
-    <div>
-    {bets && (
-      <div className="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4 text-center">{bets.title}</h1>
-        <p className="mb-2 text-lg"><strong>Resolve Condition:</strong> {bets.resolveCond}</p>
-        <p className="mb-2 text-lg"><strong>Odds:</strong> {bets.affirmativeBets.length} : {bets.negativeBets.length}</p>
-        <p className="mb-4 text-lg"><strong>Pot:</strong> ${bets.pot}</p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <h2 className="text-2xl font-semibold mb-2 text-center">Affirmative Bets</h2>
-            <ul className="list-disc list-inside bg-green-100 p-4 rounded-lg shadow-sm">
-              {bets.affirmativeBets.map((bet, index) => (
-                <li key={index} className="mb-1">
-                  <strong>User:</strong> {bet.username}, <strong>Wager:</strong> ${bet.wager}
-                </li>
-              ))}
-            </ul>
+    <div className="flex justify-center items-center">
+      <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="text-center p-6 bg-blue-600">
+          <h1 className="text-3xl font-bold text-white mb-2">{bets.title}</h1>
+          <p className="text-xl text-white">{bets.resolveCond}</p>
+        </div>
+        <div className="p-6">
+          <div className="mb-6">
+            <p className="text-lg"><strong>Odds:</strong> {bets.affirmativeBets.length} : {bets.negativeBets.length}</p>
+            <p className="text-lg"><strong>Pot:</strong> ${bets.pot.toFixed(2)}</p>
           </div>
-
-          <div>
-            <h2 className="text-2xl font-semibold mb-2 text-center">Negative Bets</h2>
-            <ul className="list-disc list-inside bg-red-100 p-4 rounded-lg shadow-sm">
-              {bets.negativeBets.map((bet, index) => (
-                <li key={index} className="mb-1">
-                  <strong>User:</strong> {bet.username}, <strong>Wager:</strong> ${bet.wager}
-                </li>
-              ))}
-            </ul>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h2 className="text-2xl font-semibold mb-4 text-center">Affirmative Bets</h2>
+              <ul className="bg-green-100 p-4 rounded-lg">
+                {bets.affirmativeBets.map((bet, index) => (
+                  <li key={index} className="mb-2">
+                    <strong>User:</strong> {bet.username}, <strong>Wager:</strong> ${bet.wager.toFixed(2)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h2 className="text-2xl font-semibold mb-4 text-center">Negative Bets</h2>
+              <ul className="bg-red-100 p-4 rounded-lg">
+                {bets.negativeBets.map((bet, index) => (
+                  <li key={index} className="mb-2">
+                    <strong>User:</strong> {bet.username}, <strong>Wager:</strong> ${bet.wager.toFixed(2)}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
+        <div className="text-center p-6 bg-gray-100">
+          <Link href="/" className="text-blue-600 hover:underline">
+            Back to Home
+          </Link>
+        </div>
       </div>
-    )}
-
-
     </div>
-
   );
 }
