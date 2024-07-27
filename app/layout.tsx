@@ -31,7 +31,7 @@ export default function RootLayout({
               </nav>
               {children}
               <footer className="flex w-full justify-center border-t border-t-foreground/10 p-8 text-center text-xs">
-                <p>Made with ❤️ by Beau, JX, and Fraser</p>
+                <p>Made with ❤️ by Beau and JX, for Kishan</p>
               </footer>
             </div>
           </main>

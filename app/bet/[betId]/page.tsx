@@ -41,7 +41,7 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
         return;
       }
 
-      function sum(nums: number[]) {
+      function sum(nums: number[]): number {
         return nums.reduce((acc: number, val: number) => acc + val, 0);
       }
 
@@ -58,14 +58,14 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
       }
 
       let affirmativeBets: BetInfo[] = data.affirmative_user_wagers.map(
-        (wager, index) => ({
+        (wager: number, index: number) => ({
           username: data.affirmative_user_clerk_ids[index],
           wager: wager,
         }),
       );
 
       let negativeBets: BetInfo[] = data.negative_user_wagers.map(
-        (wager, index) => ({
+        (wager: number, index: number) => ({
           username: data.negative_user_clerk_ids[index],
           wager: wager,
         }),
