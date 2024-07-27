@@ -12,12 +12,7 @@ export default async function Index() {
   return (
     <>
       <BetForm />
-
       <PastBets />
-
-      <SignedIn>
-        <p> hello </p>
-      </SignedIn>
     </>
   );
 }
