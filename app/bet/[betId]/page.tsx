@@ -117,6 +117,20 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
               <strong>Pot:</strong> ${bets.pot}
             </p>
           </div>
+          <button
+            className="mx-auto my-5 h-12 px-4 transform rounded-md bg-blue-500 py-2 text-white transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95"
+            onClick={(e) => {
+              const url = window.location.href;
+              navigator.clipboard.writeText(url);
+
+              e.target.innerText = "Copied!";
+              setTimeout(() => {
+                e.target.innerText = "Copy Link to Bet";
+              }, 1000);
+            }}
+          >
+            Copy Link to Bet
+          </button>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
               <h2 className="mb-4 text-center text-2xl font-semibold">
