@@ -4,18 +4,24 @@ import { createBrowserClient } from "@supabase/ssr";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
+import { userNamesFromIds } from "@/actions";
+
 interface BetInfo {
   username: string;
   wager: number;
 }
 
+// NOTE(beau): I wanted one usestate call but honestly this is terrible
 interface BetsInfo {
   title: string;
   resolveCond?: string;
   resolveStatus: number; // 0 = unresolved, 1 = resolved affirmatively, 2 = resolved negatively
   affirmativeBets: BetInfo[];
   negativeBets: BetInfo[];
+  affirmativePot: number;
+  negativePot: number;
   pot: number;
+
 }
 
 export default function ViewBet({ params }: { params: { betId: number } }) {
@@ -41,34 +47,37 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
         return;
       }
 
-      function sum(nums: number[]) {
-        return nums.reduce((acc: number, val: number) => acc + val, 0);
+      function sum(nums?: number[]) {
+        return nums?.reduce((acc: number, val: number) => acc + val, 0) || 0;
       }
 
-      const pot =
-        sum(data.affirmative_user_wagers) + sum(data.negative_user_wagers);
+      // TODO(beau): make this not cursed
+      const affirmativePot = sum(data.affirmative_user_wagers);
+      const negativePot = sum(data.negative_user_wagers);
+      const pot = affirmativePot + negativePot;
 
-      if (
-        data.affirmative_user_wagers.length !==
-          data.affirmative_user_clerk_ids.length ||
-        data.negative_user_wagers.length !== data.negative_user_clerk_ids.length
-      ) {
-        console.error("Mismatched user wager and clerk ID arrays");
-        return;
-      }
-
-      let affirmativeBets: BetInfo[] = data.affirmative_user_wagers.map(
-        (wager, index) => ({
-          username: data.affirmative_user_clerk_ids[index],
-          wager: wager,
-        }),
+      // NOTE(beau): I didn't batch these requests because its hard to tell
+      // which usernames correspond to which side of the bet if not all of the
+      // users who made the bet have user ids anymore
+      const affirmativeUsernames = await userNamesFromIds(
+        data.affirmative_user_clerk_ids,
+      );
+      const negativeUsernames = await userNamesFromIds(
+        data.negative_user_clerk_ids,
       );
 
-      let negativeBets: BetInfo[] = data.negative_user_wagers.map(
-        (wager, index) => ({
-          username: data.negative_user_clerk_ids[index],
+      let affirmativeBets: BetInfo[] =
+        data.affirmative_user_wagers?.map((wager, index) => ({
+          username: affirmativeUsernames[index],
           wager: wager,
-        }),
+        })) || [];
+
+      let negativeBets: BetInfo[] = data.negative_user_wagers?.map(
+        (wager, index) =>
+          ({
+            username: negativeUsernames[index],
+            wager: wager,
+          }) || [],
       );
 
       const bets: BetsInfo = {
@@ -77,6 +86,8 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
         resolveStatus: data.resolve_status,
         affirmativeBets,
         negativeBets,
+        affirmativePot,
+        negativePot,
         pot,
       };
 
@@ -100,11 +111,11 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
         <div className="p-6">
           <div className="mb-6">
             <p className="text-lg">
-              <strong>Odds:</strong> {bets.affirmativeBets.length} :{" "}
-              {bets.negativeBets.length}
+              <strong>Odds:</strong> {bets.affirmativePot} :{" "}
+              {bets.negativePot}
             </p>
             <p className="text-lg">
-              <strong>Pot:</strong> ${bets.pot.toFixed(2)}
+              <strong>Pot:</strong> ${bets.pot}
             </p>
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -113,7 +124,7 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
                 Affirmative Bets
               </h2>
               <ul className="rounded-lg bg-green-100 p-4">
-                {bets.affirmativeBets.map((bet, index) => (
+                {bets.affirmativeBets && bets.affirmativeBets.map((bet, index) => (
                   <li key={index} className="mb-2">
                     <strong>User:</strong> {bet.username},{" "}
                     <strong>Wager:</strong> ${bet.wager.toFixed(2)}
@@ -126,7 +137,7 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
                 Negative Bets
               </h2>
               <ul className="rounded-lg bg-red-100 p-4">
-                {bets.negativeBets.map((bet, index) => (
+                {bets.negativeBets && bets.negativeBets.map((bet, index) => (
                   <li key={index} className="mb-2">
                     <strong>User:</strong> {bet.username},{" "}
                     <strong>Wager:</strong> ${bet.wager.toFixed(2)}
