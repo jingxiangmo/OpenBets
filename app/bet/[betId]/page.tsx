@@ -111,8 +111,7 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
         <div className="p-6">
           <div className="mb-6">
             <p className="text-lg">
-              <strong>Odds:</strong> {bets.affirmativePot} :{" "}
-              {bets.negativePot}
+              <strong>Odds:</strong> {bets.affirmativePot} : {bets.negativePot}
             </p>
             <p className="text-lg">
               <strong>Pot:</strong> ${bets.pot}
