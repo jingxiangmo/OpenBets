@@ -229,8 +229,7 @@ const BetForm = () => {
           >
             🤝 Open Bet
           </button>
-          <SignOutButton />
-        </SignedIn>
+         </SignedIn>
 
         <SignedOut>
           <SignUpButton>
