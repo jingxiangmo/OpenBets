@@ -57,15 +57,19 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
         return;
       }
 
-      let affirmativeBets: BetInfo[] = data.affirmative_user_wagers.map((wager, index) => ({
-        username: data.affirmative_user_clerk_ids[index],
-        wager: wager,
-      }));
+      let affirmativeBets: BetInfo[] = data.affirmative_user_wagers.map(
+        (wager, index) => ({
+          username: data.affirmative_user_clerk_ids[index],
+          wager: wager,
+        }),
+      );
 
-      let negativeBets: BetInfo[] = data.negative_user_wagers.map((wager, index) => ({
-        username: data.negative_user_clerk_ids[index],
-        wager: wager,
-      }));
+      let negativeBets: BetInfo[] = data.negative_user_wagers.map(
+        (wager, index) => ({
+          username: data.negative_user_clerk_ids[index],
+          wager: wager,
+        }),
+      );
 
       const bets: BetsInfo = {
         title: data.title,
@@ -87,41 +91,52 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
   }
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
-        <div className="text-center p-6 bg-blue-600">
-          <h1 className="text-3xl font-bold text-white mb-2">{bets.title}</h1>
+    <div className="flex items-center justify-center">
+      <div className="w-full max-w-4xl overflow-hidden rounded-lg bg-white shadow-lg">
+        <div className="bg-blue-600 p-6 text-center">
+          <h1 className="mb-2 text-3xl font-bold text-white">{bets.title}</h1>
           <p className="text-xl text-white">{bets.resolveCond}</p>
         </div>
         <div className="p-6">
           <div className="mb-6">
-            <p className="text-lg"><strong>Odds:</strong> {bets.affirmativeBets.length} : {bets.negativeBets.length}</p>
-            <p className="text-lg"><strong>Pot:</strong> ${bets.pot.toFixed(2)}</p>
+            <p className="text-lg">
+              <strong>Odds:</strong> {bets.affirmativeBets.length} :{" "}
+              {bets.negativeBets.length}
+            </p>
+            <p className="text-lg">
+              <strong>Pot:</strong> ${bets.pot.toFixed(2)}
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <h2 className="text-2xl font-semibold mb-4 text-center">Affirmative Bets</h2>
-              <ul className="bg-green-100 p-4 rounded-lg">
+              <h2 className="mb-4 text-center text-2xl font-semibold">
+                Affirmative Bets
+              </h2>
+              <ul className="rounded-lg bg-green-100 p-4">
                 {bets.affirmativeBets.map((bet, index) => (
                   <li key={index} className="mb-2">
-                    <strong>User:</strong> {bet.username}, <strong>Wager:</strong> ${bet.wager.toFixed(2)}
+                    <strong>User:</strong> {bet.username},{" "}
+                    <strong>Wager:</strong> ${bet.wager.toFixed(2)}
                   </li>
                 ))}
               </ul>
             </div>
             <div>
-              <h2 className="text-2xl font-semibold mb-4 text-center">Negative Bets</h2>
-              <ul className="bg-red-100 p-4 rounded-lg">
+              <h2 className="mb-4 text-center text-2xl font-semibold">
+                Negative Bets
+              </h2>
+              <ul className="rounded-lg bg-red-100 p-4">
                 {bets.negativeBets.map((bet, index) => (
                   <li key={index} className="mb-2">
-                    <strong>User:</strong> {bet.username}, <strong>Wager:</strong> ${bet.wager.toFixed(2)}
+                    <strong>User:</strong> {bet.username},{" "}
+                    <strong>Wager:</strong> ${bet.wager.toFixed(2)}
                   </li>
                 ))}
               </ul>
             </div>
           </div>
         </div>
-        <div className="text-center p-6 bg-gray-100">
+        <div className="bg-gray-100 p-6 text-center">
           <Link href="/" className="text-blue-600 hover:underline">
             Back to Home
           </Link>

@@ -1,6 +1,6 @@
 "use client";
-import { createClerkSupabaseClient } from "@/utils/supabase/client"
-import { useSession, useUser } from "@clerk/nextjs"
+import { createClerkSupabaseClient } from "@/utils/supabase/client";
+import { useSession, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
 export default function SupabaseTest() {
@@ -26,16 +26,14 @@ export default function SupabaseTest() {
         const userId = user?.id;
 
         const { data, error } = await client
-          .from('bet')
-          .insert(
-            {
-              title: "client test",
-              affirmative_user_clerk_ids: [userId],
-              affirmative_user_wagers: [100],
-              negative_user_clerk_ids: [userId],
-              negative_user_wagers: [100],
-            }
-          )
+          .from("bet")
+          .insert({
+            title: "client test",
+            affirmative_user_clerk_ids: [userId],
+            affirmative_user_wagers: [100],
+            negative_user_clerk_ids: [userId],
+            negative_user_wagers: [100],
+          })
           .select();
 
         if (error) {
@@ -53,5 +51,5 @@ export default function SupabaseTest() {
     }
   }, [user, session]);
 
-  return <div>client test</div>
+  return <div>client test</div>;
 }

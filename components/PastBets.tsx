@@ -13,7 +13,7 @@ export default async function PastBets() {
   const filteredBets = (bets ?? []).filter(
     (bet) =>
       bet.affirmative_user_clerk_ids.includes(userId) ||
-      bet.negative_user_clerk_ids.includes(userId)
+      bet.negative_user_clerk_ids.includes(userId),
   );
 
   return (

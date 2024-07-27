@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { SignUpButton, SignedIn, SignedOut, SignOutButton } from "@clerk/nextjs";
+import {
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  SignOutButton,
+} from "@clerk/nextjs";
 
 const BetForm = () => {
   const [topic, setTopic] = useState("");
@@ -60,8 +65,8 @@ const BetForm = () => {
   };
 
   return (
-    <div className="sm:w-3/4 md:w-2/3 lg:w-1/2 p-8">
-      <h2 className="text-4xl font-bold mb-8">Create a Bet</h2>
+    <div className="p-8 sm:w-3/4 md:w-2/3 lg:w-1/2">
+      <h2 className="mb-8 text-4xl font-bold">Create a Bet</h2>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -70,19 +75,19 @@ const BetForm = () => {
             type="text"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
-            className="mt-1 block p-2 h-20 w-full border rounded-md text-black placeholder-gray-300"
+            className="mt-1 block h-20 w-full rounded-md border p-2 text-black placeholder-gray-300"
             placeholder="Will Fraser and Guilia date by the end of 2024?"
             required
           />
         </div>
 
-        <h1 className="text-2xl font-bold my-4">Home Bet</h1>
+        <h1 className="my-4 text-2xl font-bold">Home Bet</h1>
 
         <div className="mb-4 flex">
           <button
             type="button"
             onClick={() => handleButtonClick("yes")}
-            className={`w-1/2 m-1 py-2 border-2 shadow-sm rounded-md ${
+            className={`m-1 w-1/2 rounded-md border-2 py-2 shadow-sm ${
               selectedButton === "yes"
                 ? "bg-green-500 text-black"
                 : "text-black hover:bg-green-200"
@@ -94,7 +99,7 @@ const BetForm = () => {
           <button
             type="button"
             onClick={() => handleButtonClick("no")}
-            className={`w-1/2 m-1 py-2 border-2 shadow-sm rounded-md ${
+            className={`m-1 w-1/2 rounded-md border-2 py-2 shadow-sm ${
               selectedButton === "no"
                 ? "bg-red-500 text-black"
                 : "text-black hover:bg-red-200"
@@ -108,14 +113,14 @@ const BetForm = () => {
           <div className="mb-4 w-1/2">
             <label className="block text-black">Wager ($):</label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                 $
               </span>
               <input
                 type="text"
                 value={money}
                 onChange={(e) => setMoney(e.target.value)}
-                className="p-2 pl-7 mt-1 block w-full border border-gray-200 rounded-md shadow-sm text-black placeholder-gray-200"
+                className="mt-1 block w-full rounded-md border border-gray-200 p-2 pl-7 text-black placeholder-gray-200 shadow-sm"
                 placeholder="10"
                 required
               />
@@ -128,12 +133,12 @@ const BetForm = () => {
               type="date"
               value={resolveBy}
               onChange={(e) => setResolveBy(e.target.value)}
-              className="p-2 mt-1 block w-full border rounded-md text-black placeholder-gray-100"
+              className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-100"
               required
               style={{ color: resolveBy === "" ? "#d3d3d3" : "black" }}
             />
 
-            <div className="flex justify-between mt-2">
+            <div className="mt-2 flex justify-between">
               <button
                 type="button"
                 onClick={() => handleDateAddition(1)}
@@ -168,19 +173,19 @@ const BetForm = () => {
             Away Bet (Optional)
           </button>
           {showAwayBet && (
-            <div className="mt-4 p-4 rounded-md shadow-sm bg-gray-100">
-              <h1 className="text-xl font-bold my-4">Away Bet (Optional)</h1>
+            <div className="mt-4 rounded-md bg-gray-100 p-4 shadow-sm">
+              <h1 className="my-4 text-xl font-bold">Away Bet (Optional)</h1>
               <div className="mb-4 w-1/2">
                 <label className="block text-black">Wager ($):</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                     $
                   </span>
                   <input
                     type="text"
                     value={awayMoney}
                     onChange={(e) => setAwayMoney(e.target.value)}
-                    className="p-2 pl-7 mt-1 block w-full border border-gray-200 rounded-md shadow-sm text-black placeholder-gray-200"
+                    className="mt-1 block w-full rounded-md border border-gray-200 p-2 pl-7 text-black placeholder-gray-200 shadow-sm"
                     placeholder="10"
                   />
                 </div>
@@ -193,7 +198,7 @@ const BetForm = () => {
           <button
             type="submit"
             onClick={handleFormSubmit}
-            className="w-full my-5 h-12 bg-blue-500 text-white py-2 rounded-md mx-auto transition-transform duration-200 ease-in-out transform hover:shadow-lg hover:scale-105 active:scale-95"
+            className="mx-auto my-5 h-12 w-full transform rounded-md bg-blue-500 py-2 text-white transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95"
           >
             🤝 Open Bet
           </button>
@@ -205,7 +210,7 @@ const BetForm = () => {
             <button
               type="button"
               onClick={handleSignIn}
-              className="w-full my-5 h-12 bg-blue-500 text-white py-2 rounded-md mx-auto transition-transform duration-200 ease-in-out transform hover:shadow-lg hover:scale-105 active:scale-95"
+              className="mx-auto my-5 h-12 w-full transform rounded-md bg-blue-500 py-2 text-white transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95"
             >
               🤝 Signup to Bet
             </button>
