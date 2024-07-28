@@ -131,6 +131,59 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
           >
             Copy Link to Bet
           </button>
+          <form
+            className="mb-6"
+            onSubmit={async (e) => {
+              e.preventDefault();
+
+              const { error } = await supabase
+                .from("bet")
+                .update({
+                  resolve_status: e.target.betChoice.value,
+                })
+                .eq("id", params.betId);
+
+              if (error) {
+                // TODO: handle error
+              }
+            }}
+          >
+            <h2 className="mb-4 text-2xl font-semibold">Resolve Bet?</h2>
+            <input
+              className="peer/betYes size-0 opacity-0"
+              type="radio"
+              id="betYes"
+              name="betChoice"
+              value={2}
+              required
+            />
+            <input
+              className="peer/betNo size-0 opacity-0"
+              type="radio"
+              id="betNo"
+              name="betChoice"
+              value={1}
+            />
+            <label
+              className="m-1 w-1/2 cursor-pointer rounded-md border-2 py-2 text-center shadow-sm hover:bg-green-200 peer-checked/betYes:bg-green-500"
+              htmlFor="betYes"
+            >
+              ✅ Yes
+            </label>
+            <label
+              className="m-1 w-1/2 cursor-pointer rounded-md border-2 py-2 text-center shadow-sm hover:bg-red-200 peer-checked/betNo:bg-red-500"
+              htmlFor="betNo"
+            >
+              ❌ No
+            </label>
+
+            <button
+              type="submit"
+              className="mx-auto my-5 h-12 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95"
+            >
+              submit
+            </button>
+          </form>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
               <h2 className="mb-4 text-center text-2xl font-semibold">
