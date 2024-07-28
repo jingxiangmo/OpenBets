@@ -66,15 +66,17 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
       );
 
       let affirmativeBets: BetInfo[] =
-        data.affirmative_user_wagers?.map((wager, index) => ({
-          username: affirmativeUsernames[index],
+        (data.affirmative_user_wagers as number[])?.map((wager, index) => ({
+          username: (affirmativeUsernames as string[])[index],
           wager: wager,
         })) || [];
 
-      let negativeBets: BetInfo[] = data.negative_user_wagers?.map(
+      let negativeBets: BetInfo[] = (
+        data.negative_user_wagers as number[]
+      )?.map(
         (wager, index) =>
           ({
-            username: negativeUsernames[index],
+            username: (negativeUsernames as string[])[index],
             wager: wager,
           }) || [],
       );
