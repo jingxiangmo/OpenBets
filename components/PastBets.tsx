@@ -1,6 +1,7 @@
 import { createClerkSupabaseClient } from "@/utils/supabase/server";
 import { auth } from "@clerk/nextjs/server";
 import BetCard from "./BetCard";
+import Link from "next/link";
 
 export default async function PastBets() {
   const authstate = auth();
@@ -26,7 +27,13 @@ export default async function PastBets() {
         <p className="text-xl">No bets yet! Go bet your friends</p>
       ) : (
         filteredBets.map((bet) => (
-          <BetCard key={bet.id} bet={bet} />
+          <Link 
+            key={bet.id} 
+            href={`/bet/${bet.id}`}
+            className="block transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg"
+          >
+            <BetCard bet={bet} />
+          </Link>
         ))
       )}
     </div>
