@@ -1,3 +1,4 @@
+import { userNamesFromIds } from "@/actions";
 import React from "react";
 
 interface BetCardProps {
@@ -15,7 +16,10 @@ interface BetCardProps {
   };
 }
 
-const BetCard: React.FC<BetCardProps> = ({ bet }) => {
+const BetCard: React.FC<BetCardProps> = async ({ bet }) => {
+  const affirmativeUsernames = await userNamesFromIds(bet.affirmative_user_clerk_ids);
+  const negativeUsernames = await userNamesFromIds(bet.negative_user_clerk_ids);
+
   const resolveStatusText = 
     bet.resolve_status === 0 ? "Unresolved" :
     bet.resolve_status === 1 ? "Resolved Affirmatively" :
@@ -52,7 +56,7 @@ const BetCard: React.FC<BetCardProps> = ({ bet }) => {
         <div className="grid grid-cols-2 gap-4">
           <div className="rounded-md bg-green-100 p-4">
             <h4 className="mb-2 font-semibold text-green-700">Yes</h4>
-            {bet.affirmative_user_clerk_ids.map((user, index) => (
+            {affirmativeUsernames.map((user, index) => (
               <p key={index} className="text-sm">
                 {user}: ${bet.affirmative_user_wagers[index].toFixed(2)}
               </p>
@@ -60,7 +64,7 @@ const BetCard: React.FC<BetCardProps> = ({ bet }) => {
           </div>
           <div className="rounded-md bg-red-100 p-4">
             <h4 className="mb-2 font-semibold text-red-700">No</h4>
-            {bet.negative_user_clerk_ids.map((user, index) => (
+            {negativeUsernames.map((user, index) => (
               <p key={index} className="text-sm">
                 {user}: ${bet.negative_user_wagers[index].toFixed(2)}
               </p>
