@@ -162,6 +162,7 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
               <p className="text-lg">
                 <span className="font-medium">Pot:</span> ${bets.pot.toFixed(2)}
               </p>
+
             </div>
             
             <button
