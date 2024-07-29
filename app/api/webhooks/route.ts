@@ -1,6 +1,8 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
-import { WebhookEvent } from '@clerk/nextjs/server'
+import { UserJSON, WebhookEvent } from '@clerk/nextjs/server'
+
+import { createUser } from '../../../db/queries'
 
 export async function POST(req: Request) {
 
@@ -49,10 +51,32 @@ export async function POST(req: Request) {
 
   // Do something with the payload
   // For this guide, you simply log the payload to the console
-  const { id } = evt.data;
+  const { id: clerkId, first_name, last_name } = evt.data as UserJSON;
   const eventType = evt.type;
-  console.log(`Webhook with and ID of ${id} and type of ${eventType}`)
-  console.log('Webhook body:', body)
+  console.log(`Webhook with and ID of ${clerkId} and type of ${eventType}`)
+  console.log('stuff:', clerkId, first_name, last_name)
+
+  // NOTE: first and last names are required to have an account with us in clerk
+  const dbName = `${first_name!} ${last_name!}`;
+
+  switch (eventType) {
+    case "user.created": {
+      console.log("user created");
+      await createUser({
+        clerkId,
+        name: dbName,
+      });
+      break;
+    }
+    case 'user.updated':
+      console.log('user updated')
+      break
+    case 'user.deleted':
+      console.log('user deleted')
+      break
+    default:
+      console.log('unknown event type')
+  }
 
   return new Response('', { status: 200 })
 }
