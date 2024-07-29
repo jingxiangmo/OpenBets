@@ -54,6 +54,7 @@ export const wagersTable = sqliteTable(
 
     wager: integer("wager", { mode: "number" }).notNull(), // in USD
     side: integer("side", { mode: "boolean" }).notNull(), // false = negative, true = affirmative
+    odds: integer("odds", { mode: "number" }), // in whole percent e.g. 60%, NOT 60.5%
   },
   (table) => ({
     pk: primaryKey({ columns: [table.betId, table.userId] }),
