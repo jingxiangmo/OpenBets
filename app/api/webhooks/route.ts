@@ -49,38 +49,33 @@ export async function POST(req: Request) {
     })
   }
 
-  // Do something with the payload
-  // For this guide, you simply log the payload to the console
-  const { id: clerkId, first_name, last_name } = evt.data as UserJSON;
+  const clerkId = evt.data.id!;
   const eventType = evt.type;
-  console.log(`Webhook with and ID of ${clerkId} and type of ${eventType}`)
-  console.log('stuff:', clerkId, first_name, last_name)
-
-  // NOTE: first and last names are required to have an account with us in clerk
-  const dbName = `${first_name!} ${last_name!}`;
+  console.log(eventType);
 
   switch (eventType) {
-    case "user.created": {
-      console.log("user created");
-      await createUser({
-        clerkId,
-        name: dbName,
-      });
-      break;
-    }
+    case "user.created":
     case "user.updated": {
-      console.log("user updated");
-      await updateUser({
+      const { first_name, last_name } = evt.data as UserJSON;
+      const dbName = `${first_name!} ${last_name!}`;
+
+      const dbFunc = eventType == "user.created" ? createUser : updateUser;
+
+      const result = await dbFunc({
         clerkId,
         name: dbName,
       });
+
       break;
     }
     case 'user.deleted':
       console.log('user deleted')
       break
-    default:
-      console.log('unknown event type')
+    default: {
+      return new Response("unknown event type", {
+        status: 400,
+      });
+    }
   }
 
   return new Response('', { status: 200 })
