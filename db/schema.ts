@@ -31,14 +31,15 @@ export const wagersTable = sqliteTable(
   {
     betId: integer("bet_id").references(() => betsTable.id, { onDelete: "cascade" }),
     userId: text("user_id").references(() => usersTable.clerkId),
-    wager: integer("wager", { mode: "number" }).notNull(), // in USD
-
     createdAt: integer("created_at", { mode: "timestamp" })
       .default(sql`(unixepoch())`)
       .notNull(),
     updatedAt: integer("updatedAt", { mode: "timestamp" }).$onUpdate(
       () => new Date(),
     ),
+
+    wager: integer("wager", { mode: "number" }).notNull(), // in USD
+    side: integer("side", { mode: "boolean" }).notNull(), // false = negative, true = affirmative
   },
   (table) => ({
     pk: primaryKey({ columns: [table.betId, table.userId] }),
