@@ -8,7 +8,7 @@ import {
 
 export const usersTable = sqliteTable('users', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  clerkId: text('clerk_id'),
+  clerkId: text('clerk_id').unique(),
   name: text('name').notNull(),
 });
 
@@ -33,6 +33,13 @@ export const wagersTable = sqliteTable(
     betId: integer("bet_id").references(() => betsTable.id),
     userId: integer("user_id").references(() => usersTable.id),
     wager: integer("wager", { mode: "number" }).notNull(), // in USD
+
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+    updatedAt: integer("updatedAt", { mode: "timestamp" }).$onUpdate(
+      () => new Date(),
+    ),
   },
   (table) => ({
     pk: primaryKey({ columns: [table.betId, table.userId] }),
