@@ -7,14 +7,13 @@ import {
 } from 'drizzle-orm/sqlite-core';
 
 export const usersTable = sqliteTable('users', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  clerkId: text('clerk_id').unique(),
+  clerkId: text('clerk_id').primaryKey(),
   name: text('name').notNull(),
 });
 
 export const betsTable = sqliteTable("bets", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  createdById: integer("created_by").references(() => usersTable.id),
+  createdById: text("created_by").references(() => usersTable.clerkId),
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`(unixepoch())`)
     .notNull(),
@@ -30,8 +29,8 @@ export const betsTable = sqliteTable("bets", {
 export const wagersTable = sqliteTable(
   "wagers",
   {
-    betId: integer("bet_id").references(() => betsTable.id),
-    userId: integer("user_id").references(() => usersTable.id),
+    betId: integer("bet_id").references(() => betsTable.id, { onDelete: "cascade" }),
+    userId: text("user_id").references(() => usersTable.clerkId),
     wager: integer("wager", { mode: "number" }).notNull(), // in USD
 
     createdAt: integer("created_at", { mode: "timestamp" })
