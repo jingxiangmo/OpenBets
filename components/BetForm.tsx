@@ -9,6 +9,8 @@ import {
   SignOutButton,
 } from "@clerk/nextjs";
 
+import { createBetAndWagerFromForm } from "../actions";
+
 const BetForm = () => {
   const { user } = useUser();
   const { session } = useSession();
@@ -38,45 +40,29 @@ const BetForm = () => {
       return;
     }
 
-    const userId = user?.id;
-
-    const betData = {
-      title: topic,
-      resolve_condition: resolveCondition,
-      resolve_deadline: resolveBy,
-      affirmative_user_clerk_ids: selectedButton === "yes" ? [userId] : [],
-      affirmative_user_wagers: selectedButton === "yes" ? [parseFloat(wager)] : [],
-      negative_user_clerk_ids: selectedButton === "no" ? [userId] : [negativeUserId],
-      negative_user_wagers: selectedButton === "no" ? [parseFloat(wager)] : [parseFloat(negativeWager)],
-    };
-
-    console.log("Data about to be posted to database:", betData);
-
     try {
-      // const { data, error } = await client
-      //   .from("bet")
-      //   .insert(betData)
-      //   .select();
-      //
-      // if (error) {
-      //   console.error("Error inserting data:", error);
-      // } else {
-      //   console.log("Bet created successfully:", data);
-      //   // Reset form fields
-      //   setTopic("");
-      //   setResolveCondition("");
-      //   setResolveBy("");
-      //   setSelectedButton(null);
-      //   setWager("");
-      //   setNegativeUserId("");
-      //   setNegativeWager("");
-      //   // Show modal
-      //   setShowModal(true);
-      //   // Refresh the page after a short delay
-      //   setTimeout(() => {
-      //     window.location.reload();
-      //   }, 2000);
-      // }
+      const betId = await createBetAndWagerFromForm(
+        topic,
+        resolveCondition,
+        new Date(resolveBy),
+        parseInt(wager),
+        selectedButton === "yes",
+      );
+
+      // Reset form fields
+      setTopic("");
+      setResolveCondition("");
+      setResolveBy("");
+      setSelectedButton(null);
+      setWager("");
+      setNegativeUserId("");
+      setNegativeWager("");
+      // Show modal
+      setShowModal(true);
+      // Refresh the page after a short delay
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error("Error creating bet:", error);
     }
