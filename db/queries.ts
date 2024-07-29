@@ -16,3 +16,9 @@ export async function updateUser({ name, clerkId }: schema.InsertUser) {
     })
     .where(eq(schema.usersTable.clerkId, clerkId!));
 }
+
+export async function deleteClerkUser(clerkId: string) {
+  return await db
+    .delete(schema.usersTable)
+    .where(eq(schema.usersTable.clerkId, clerkId));
+}

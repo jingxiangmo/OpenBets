@@ -2,7 +2,7 @@ import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { UserJSON, WebhookEvent } from '@clerk/nextjs/server'
 
-import { createUser, updateUser } from '../../../db/queries'
+import { createUser, deleteClerkUser, updateUser } from '../../../db/queries'
 
 export async function POST(req: Request) {
 
@@ -68,9 +68,10 @@ export async function POST(req: Request) {
 
       break;
     }
-    case 'user.deleted':
-      console.log('user deleted')
-      break
+    case "user.deleted": {
+      const result = await deleteClerkUser(clerkId);
+      break;
+    }
     default: {
       return new Response("unknown event type", {
         status: 400,
