@@ -10,7 +10,7 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "OpenBets",
+  title: "WeShallSee.xyz",
   description: "The fastest way to settle a disagreement.",
 };
 
@@ -29,7 +29,7 @@ export default function RootLayout({
 
 
                 <div className="flex w-full max-w-4xl items-center justify-between p-3 text-sm">
-                  <Link href="/" className="text-xl">OpenBets</Link>
+                  <Link href="/" className="text-xl">WeShallSee.xyz</Link>
                   <div>
                     <SignedIn>
                       <SignOutButton />
