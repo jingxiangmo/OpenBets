@@ -91,24 +91,24 @@ const BetForm = () => {
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-black">Bet Topic:</label>
-          <input
-            type="text"
+          <textarea
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             className="mt-1 block h-20 w-full rounded-md border p-2 text-black placeholder-gray-300"
             placeholder="Will Fraser and Guilia date by the end of 2024?"
+            rows={4} 
             required
           />
         </div>
 
         <div className="mb-4">
           <label className="block text-black">Resolve Condition (Optional):</label>
-          <input
-            type="text"
+          <textarea
             value={resolveCondition}
             onChange={(e) => setResolveCondition(e.target.value)}
             className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-300"
             placeholder="Condition for resolving the bet"
+            rows={4} 
           />
         </div>
 
@@ -196,7 +196,6 @@ const BetForm = () => {
         </div>
           
         <h1 className="my-4 text-xl font-bold">Opponent Bet</h1>
-
 
         <div className="mb-4">
           <label className="block text-black">Opponent Name</label>
