@@ -2,7 +2,7 @@ import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { UserJSON, WebhookEvent } from '@clerk/nextjs/server'
 
-import { createUser } from '../../../db/queries'
+import { createUser, updateUser } from '../../../db/queries'
 
 export async function POST(req: Request) {
 
@@ -68,9 +68,14 @@ export async function POST(req: Request) {
       });
       break;
     }
-    case 'user.updated':
-      console.log('user updated')
-      break
+    case "user.updated": {
+      console.log("user updated");
+      await updateUser({
+        clerkId,
+        name: dbName,
+      });
+      break;
+    }
     case 'user.deleted':
       console.log('user deleted')
       break
