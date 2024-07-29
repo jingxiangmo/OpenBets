@@ -1,4 +1,4 @@
-import { sql } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import {
   primaryKey,
   integer,
@@ -10,6 +10,10 @@ export const usersTable = sqliteTable('users', {
   clerkId: text('clerk_id').primaryKey(),
   name: text('name').notNull(),
 });
+
+export const usersRelations = relations(usersTable, ({ many }) => ({
+  wagers: many(wagersTable),
+}));
 
 export const betsTable = sqliteTable("bets", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -25,6 +29,14 @@ export const betsTable = sqliteTable("bets", {
   resolveCondition: text("resolve_condition"),
   resolved: integer("resolved", { mode: "number" }).default(0), // 0 = unresolved, 1 = negative, 2 = affirmative
 });
+
+export const betsRelations = relations(betsTable, ({ one, many }) => ({
+  createdBy: one(usersTable, {
+    fields: [betsTable.createdById],
+    references: [usersTable.clerkId],
+  }),
+  wagers: many(wagersTable),
+}));
 
 export const wagersTable = sqliteTable(
   "wagers",
@@ -45,6 +57,18 @@ export const wagersTable = sqliteTable(
     pk: primaryKey({ columns: [table.betId, table.userId] }),
   }),
 );
+
+export const wagersRelations = relations(wagersTable, ({ one }) => ({
+  bet: one(betsTable, {
+    fields: [wagersTable.betId],
+    references: [betsTable.id],
+  }),
+  better: one(usersTable, {
+    fields: [wagersTable.userId],
+    references: [usersTable.clerkId],
+  }),
+}));
+
 
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
