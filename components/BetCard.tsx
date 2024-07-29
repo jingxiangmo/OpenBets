@@ -43,6 +43,10 @@ const BetCard: React.FC<BetCardProps> = async ({ bet }) => {
         <p className="mb-4 text-sm text-gray-600">{bet.resolve_condition}</p>
         <div className="mb-4 flex justify-between text-sm">
           <p>
+            <span className="font-semibold">Created:</span>{" "}
+            {new Date(bet.created_at).toLocaleDateString()}
+          </p>
+          <p>
             <span className="font-semibold">Resolve Deadline:</span>{" "}
             {new Date(bet.resolve_deadline).toLocaleDateString()}
           </p>

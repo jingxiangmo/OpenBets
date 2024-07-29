@@ -20,6 +20,7 @@ const BetForm = () => {
   const [wager, setWager] = useState("");
   const [negativeUserId, setNegativeUserId] = useState("");
   const [negativeWager, setNegativeWager] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const handleButtonClick = (button: string) => {
     setSelectedButton(button);
@@ -71,6 +72,12 @@ const BetForm = () => {
         setWager("");
         setNegativeUserId("");
         setNegativeWager("");
+        // Show modal
+        setShowModal(true);
+        // Refresh the page after a short delay
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       }
     } catch (error) {
       console.error("Error creating bet:", error);
@@ -238,6 +245,38 @@ const BetForm = () => {
           </SignUpButton>
         </SignedOut>
       </form>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
+          <div className="relative mx-auto my-6 w-auto max-w-sm">
+            <div className="relative flex w-full flex-col rounded-lg border-0 bg-green-100 shadow-lg outline-none focus:outline-none">
+              <div className="flex items-start justify-between rounded-t border-b border-solid border-green-200 p-5">
+                <h3 className="text-3xl font-semibold text-green-800">
+                  Bet Submitted
+                </h3>
+                <button
+                  className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-green-800 opacity-5 outline-none focus:outline-none"
+                  onClick={() => setShowModal(false)}
+                >
+                  <span className="block h-6 w-6 bg-transparent text-2xl text-green-800 opacity-5 outline-none focus:outline-none">
+                    ×
+                  </span>
+                </button>
+              </div>
+              <div className="relative flex-auto p-6">
+                <div className="flex items-center justify-center mb-4">
+                  <svg className="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                <p className="my-4 text-lg leading-relaxed text-green-800 text-center">
+                  Your bet has been submitted successfully.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
