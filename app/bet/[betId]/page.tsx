@@ -158,7 +158,7 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
             </p>
           </div>
           <button
-            className="mx-auto my-5 h-12 px-4 transform rounded-md bg-blue-500 py-2 text-white transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95"
+            className="mx-auto my-5 h-12 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95"
             onClick={(e) => {
               const url = window.location.href;
               navigator.clipboard.writeText(url);
