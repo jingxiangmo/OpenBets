@@ -7,13 +7,14 @@ import {
 } from 'drizzle-orm/sqlite-core';
 
 export const usersTable = sqliteTable('users', {
-  clerkId: text('clerk_id').primaryKey(),
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  clerkId: text('clerk_id'),
   name: text('name').notNull(),
 });
 
 export const betsTable = sqliteTable("bets", {
-  id: integer("id").primaryKey(),
-  createdById: text("created_by").references(() => usersTable.clerkId),
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  createdById: integer("created_by").references(() => usersTable.id),
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`(unixepoch())`)
     .notNull(),
@@ -30,8 +31,8 @@ export const wagersTable = sqliteTable(
   "wagers",
   {
     betId: integer("bet_id").references(() => betsTable.id),
-    userId: text("user_id").references(() => usersTable.clerkId),
-    wager: integer("wager").notNull(), // in USD
+    userId: integer("user_id").references(() => usersTable.id),
+    wager: integer("wager", { mode: "number" }).notNull(), // in USD
   },
   (table) => ({
     pk: primaryKey({ columns: [table.betId, table.userId] }),
