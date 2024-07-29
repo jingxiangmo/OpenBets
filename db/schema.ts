@@ -1,11 +1,45 @@
 import { sql } from 'drizzle-orm';
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import {
+  primaryKey,
+  integer,
+  sqliteTable,
+  text,
+} from 'drizzle-orm/sqlite-core';
 
 export const usersTable = sqliteTable('users', {
-  id: integer('id').primaryKey(),
+  clerkId: text('clerk_id').primaryKey(),
   name: text('name').notNull(),
-  clerkId: text('clerk_id'),
 });
+
+export const betsTable = sqliteTable("bets", {
+  id: integer("id").primaryKey(),
+  createdById: text("created_by").references(() => usersTable.clerkId),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).$onUpdate(
+    () => new Date(),
+  ),
+
+  title: text("title").notNull(),
+  resolveCondition: text("resolve_condition"),
+  resolved: integer("resolved", { mode: "number" }).default(0), // 0 = unresolved, 1 = negative, 2 = affirmative
+});
+
+export const wagersTable = sqliteTable(
+  "wagers",
+  {
+    betId: integer("bet_id").references(() => betsTable.id),
+    userId: text("user_id").references(() => usersTable.clerkId),
+    wager: integer("wager").notNull(), // in USD
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.betId, table.userId] }),
+  }),
+);
 
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
+
+export type InsertBet = typeof betsTable.$inferInsert;
+export type SelectBet = typeof betsTable.$inferSelect;
