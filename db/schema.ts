@@ -44,3 +44,6 @@ export type SelectUser = typeof usersTable.$inferSelect;
 
 export type InsertBet = typeof betsTable.$inferInsert;
 export type SelectBet = typeof betsTable.$inferSelect;
+
+export type InsertWager = typeof wagersTable.$inferInsert;
+export type SelectWager = typeof wagersTable.$inferSelect;
