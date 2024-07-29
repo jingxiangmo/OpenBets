@@ -7,7 +7,7 @@ export default async function PastBets() {
   const authstate = auth();
   const client = createClerkSupabaseClient(authstate);
 
-  const { data: bets } = await client.from("bet").select("*");
+  const { data: bets } = await client.from("bet").select("*").order('created_at', { ascending: false });
 
   const userId = authstate.userId;
 
