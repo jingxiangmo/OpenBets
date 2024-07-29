@@ -7,13 +7,17 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import PastBets from "@/components/PastBets";
+import LandingPage from "@/components/LandingPage";
 
 export default async function Index() {
   return (
     <>
-      <BetForm />
+      <SignedOut>
+        <LandingPage />
+      </SignedOut>
       
       <SignedIn>
+        <BetForm />
         <PastBets />
       </SignedIn>
     </>
