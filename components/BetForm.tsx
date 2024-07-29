@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClerkSupabaseClient } from "@/utils/supabase/client";
 import { useSession, useUser } from "@clerk/nextjs";
 import {
   SignUpButton,
@@ -39,7 +38,6 @@ const BetForm = () => {
       return;
     }
 
-    const client = createClerkSupabaseClient(session);
     const userId = user?.id;
 
     const betData = {
@@ -55,30 +53,30 @@ const BetForm = () => {
     console.log("Data about to be posted to database:", betData);
 
     try {
-      const { data, error } = await client
-        .from("bet")
-        .insert(betData)
-        .select();
-
-      if (error) {
-        console.error("Error inserting data:", error);
-      } else {
-        console.log("Bet created successfully:", data);
-        // Reset form fields
-        setTopic("");
-        setResolveCondition("");
-        setResolveBy("");
-        setSelectedButton(null);
-        setWager("");
-        setNegativeUserId("");
-        setNegativeWager("");
-        // Show modal
-        setShowModal(true);
-        // Refresh the page after a short delay
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      }
+      // const { data, error } = await client
+      //   .from("bet")
+      //   .insert(betData)
+      //   .select();
+      //
+      // if (error) {
+      //   console.error("Error inserting data:", error);
+      // } else {
+      //   console.log("Bet created successfully:", data);
+      //   // Reset form fields
+      //   setTopic("");
+      //   setResolveCondition("");
+      //   setResolveBy("");
+      //   setSelectedButton(null);
+      //   setWager("");
+      //   setNegativeUserId("");
+      //   setNegativeWager("");
+      //   // Show modal
+      //   setShowModal(true);
+      //   // Refresh the page after a short delay
+      //   setTimeout(() => {
+      //     window.location.reload();
+      //   }, 2000);
+      // }
     } catch (error) {
       console.error("Error creating bet:", error);
     }
