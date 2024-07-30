@@ -80,19 +80,21 @@ const BetForm = () => {
             onChange={(e) => setTopic(e.target.value)}
             className="mt-1 block h-20 w-full rounded-md border p-2 text-black placeholder-gray-300"
             placeholder="Will Fraser and Guilia date by the end of 2024?"
-            rows={4} 
+            rows={4}
             required
           />
         </div>
 
         <div className="mb-4">
-          <label className="block text-black">Resolve Condition (Optional):</label>
+          <label className="block text-black">
+            Resolve Condition (Optional):
+          </label>
           <textarea
             value={resolveCondition}
             onChange={(e) => setResolveCondition(e.target.value)}
             className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-300"
             placeholder="Condition for resolving the bet"
-            rows={4} 
+            rows={4}
           />
         </div>
 
@@ -178,7 +180,7 @@ const BetForm = () => {
             </div>
           </div>
         </div>
-          
+
         <h1 className="my-4 text-xl font-bold">Opponent Bet</h1>
 
         <div className="mb-4">
@@ -215,7 +217,7 @@ const BetForm = () => {
           >
             🤝 Open Bet
           </button>
-         </SignedIn>
+        </SignedIn>
 
         <SignedOut>
           <SignUpButton>
@@ -247,12 +249,23 @@ const BetForm = () => {
                 </button>
               </div>
               <div className="relative flex-auto p-6">
-                <div className="flex items-center justify-center mb-4">
-                  <svg className="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                <div className="mb-4 flex items-center justify-center">
+                  <svg
+                    className="h-16 w-16 text-green-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
                   </svg>
                 </div>
-                <p className="my-4 text-lg leading-relaxed text-green-800 text-center">
+                <p className="my-4 text-center text-lg leading-relaxed text-green-800">
                   Your bet has been submitted successfully.
                 </p>
               </div>
