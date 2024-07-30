@@ -26,7 +26,7 @@ export async function deleteClerkUser(clerkId: string) {
 export async function createBetAndWager(
   clerkId: string, // creator of the bet also makes the initial wager
   { title, resolveCondition, resolveDeadline }: schema.InsertBet,
-  { wager, side, odds }: schema.InsertWager,
+  { amountUSD, side, odds }: schema.InsertWager,
 ) {
   return await db.transaction(async (tx) => {
     const [{ insertedBetId }] = await tx
@@ -42,7 +42,7 @@ export async function createBetAndWager(
     await tx.insert(schema.wagersTable).values({
       betId: insertedBetId,
       userId: clerkId,
-      wager,
+      amountUSD,
       side,
       odds,
     });

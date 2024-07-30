@@ -27,7 +27,7 @@ export const betsTable = sqliteTable("bets", {
 
   title: text("title").notNull(),
   resolveCondition: text("resolve_condition"),
-  resolveDeadline: integer("resolve_deadline", { mode: "timestamp" }),
+  resolveDeadline: integer("resolve_deadline", { mode: "timestamp" }).notNull(),
 
   resolved: integer("resolved", { mode: "number" }).default(0), // 0 = unresolved, 1 = negative, 2 = affirmative
 });
@@ -52,7 +52,7 @@ export const wagersTable = sqliteTable(
       () => new Date(),
     ),
 
-    wager: integer("wager", { mode: "number" }).notNull(), // in USD
+    amountUSD: integer("amount_USD", { mode: "number" }).notNull(), // in USD
     side: integer("side", { mode: "boolean" }).notNull(), // false = negative, true = affirmative
     odds: integer("odds", { mode: "number" }), // in whole percent e.g. 60%, NOT 60.5%
   },
@@ -66,7 +66,7 @@ export const wagersRelations = relations(wagersTable, ({ one }) => ({
     fields: [wagersTable.betId],
     references: [betsTable.id],
   }),
-  better: one(usersTable, {
+  user: one(usersTable, {
     fields: [wagersTable.userId],
     references: [usersTable.clerkId],
   }),

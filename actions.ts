@@ -9,7 +9,7 @@ export async function createBetAndWagerFromForm(
   resolveCondition: string | undefined,
   resolveDeadline: Date,
 
-  wager: number, // in whole USD
+  amountUSD: number, // in whole USD
   side: boolean,
   odds?: number, // in whole percent e.g. 60%, NOT 60.5%
 ) {
@@ -31,8 +31,8 @@ export async function createBetAndWagerFromForm(
     throw new Error("Deadline must be in the future");
   }
 
-  wager = Math.round(wager); // bets only in whole USD
-  if (wager <= 0) {
+  amountUSD = Math.round(amountUSD); // bets only in whole USD
+  if (amountUSD <= 0) {
     throw new Error("Wager must be greater than 0");
   }
 
@@ -51,7 +51,7 @@ export async function createBetAndWagerFromForm(
       resolveDeadline,
     },
     {
-      wager,
+      amountUSD,
       side,
       odds,
     },
