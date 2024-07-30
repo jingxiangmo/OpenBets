@@ -6,7 +6,7 @@ import { createBetAndWager } from "./db/queries";
 
 export async function createBetAndWagerFromForm(
   title: string,
-  resolveCondition: string,
+  resolveCondition: string | undefined,
   resolveDeadline: Date,
 
   wager: number, // in whole USD
@@ -22,8 +22,8 @@ export async function createBetAndWagerFromForm(
     throw new Error("Title must be between 1 and 1024 characters");
   }
 
-  if (resolveCondition.length === 0 || resolveCondition.length > 1024) {
-    throw new Error("Title must be between 1 and 1024 characters");
+  if (resolveCondition && resolveCondition.length > 8192) {
+    throw new Error("Resolve must be between 1 and 1024 characters");
   }
 
   // check if date is earlier than now
