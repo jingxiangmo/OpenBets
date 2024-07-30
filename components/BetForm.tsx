@@ -8,8 +8,16 @@ import {
   SignedOut,
   SignOutButton,
 } from "@clerk/nextjs";
+import BetInput from './BetInput';
 
 import { createBetAndWagerFromForm } from "../actions";
+
+interface Participant {
+  name: string;
+  selectedButton: string | null;
+  wager: string;
+  probability: number | "";
+}
 
 const BetForm = () => {
   const { user } = useUser();
@@ -21,9 +29,7 @@ const BetForm = () => {
   const [wager, setWager] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [probability, setProbability] = useState<number | "">(""); // Added state for probability
-  const [participants, setParticipants] = useState<
-    { name: string; selectedButton: string | null; wager: string; probability: number | "" }[]
-  >([]);
+  const [participants, setParticipants] = useState<Participant[]>([]);
 
   const handleButtonClick = (button: string) => {
     setSelectedButton(button);
@@ -33,26 +39,6 @@ const BetForm = () => {
     const currentDate = new Date();
     currentDate.setDate(currentDate.getDate() + days);
     setResolveBy(currentDate.toISOString().split("T")[0]);
-  };
-
-  const handleAddParticipant = () => {
-    setParticipants([
-      ...participants,
-      { name: "", selectedButton: null, wager: "", probability: "" },
-    ]);
-  };
-
-  const handleParticipantChange = (
-    index: number,
-    field: "name" | "selectedButton" | "wager" | "probability",
-    value: string | number | null
-  ) => {
-    const updatedParticipants = [...participants];
-    updatedParticipants[index] = {
-      ...updatedParticipants[index],
-      [field]: value,
-    };
-    setParticipants(updatedParticipants);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,7 +54,7 @@ const BetForm = () => {
         resolveCondition,
         new Date(resolveBy),
         parseInt(wager),
-        selectedButton === "yes"
+        selectedButton === "yes",
       );
 
       // Reset form fields
@@ -78,7 +64,6 @@ const BetForm = () => {
       setSelectedButton(null);
       setWager("");
       setProbability(""); // Reset probability
-      setParticipants([]); // Reset participants
       // Show modal
       setShowModal(true);
       // Refresh the page after a short delay
@@ -88,6 +73,21 @@ const BetForm = () => {
     } catch (error) {
       console.error("Error creating bet:", error);
     }
+  };
+
+  const handleAddParticipant = () => {
+    setParticipants([...participants, { name: "", selectedButton: null, wager: "", probability: "" }]);
+  };
+
+  const handleParticipantChange = (index: number, field: string, value: string | null) => {
+    setParticipants(
+      participants.map((participant, i) => {
+        if (i === index) {
+          return { ...participant, [field]: value };
+        }
+        return participant;
+      })
+    );
   };
 
   return (
@@ -120,104 +120,55 @@ const BetForm = () => {
           />
         </div>
 
+
         <div className="mb-4 w-2/5">
-          <label className="block text-black">Resolve by:</label>
-          <input
-            type="date"
-            value={resolveBy}
-            onChange={(e) => setResolveBy(e.target.value)}
-            className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-100"
-            required
-            style={{ color: resolveBy === "" ? "#d3d3d3" : "black" }}
-          />
+            <label className="block text-black">Resolve by:</label>
+            <input
+              type="date"
+              value={resolveBy}
+              onChange={(e) => setResolveBy(e.target.value)}
+              className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-100"
+              required
+              style={{ color: resolveBy === "" ? "#d3d3d3" : "black" }}
+            />
 
-          <div className="mt-2 flex justify-between">
-            <button
-              type="button"
-              onClick={() => handleDateAddition(1)}
-              className="text-xs text-blue-500 underline"
-            >
-              1 day
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDateAddition(7)}
-              className="text-xs text-blue-500 underline"
-            >
-              7 days
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDateAddition(90)}
-              className="text-xs text-blue-500 underline"
-            >
-              90 days
-            </button>
-          </div>
-        </div>
-
-        <h1 className="my-4 text-xl font-bold">Your Bet</h1>
-
-        <div className="mb-4 flex">
-          <button
-            type="button"
-            onClick={() => handleButtonClick("yes")}
-            className={`m-1 w-1/2 h-10 rounded-md border-2 shadow-sm ${
-              selectedButton === "yes"
-                ? "bg-green-500 text-black"
-                : "text-black hover:bg-green-200"
-            }`}
-          >
-            ✅ Yes
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleButtonClick("no")}
-            className={`m-1 w-1/2 h-10 rounded-md border-2 shadow-sm ${
-              selectedButton === "no"
-                ? "bg-red-500 text-black"
-                : "text-black hover:bg-red-200"
-            }`}
-          >
-            ❌ No
-          </button>
-        </div>
-
-        <div className="flex mb-3">
-          <div className="mb-4 w-1/2 pr-2">
-            <label className="block text-black">Wager ($):</label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                $
-              </span>
-              <input
-                type="text"
-                value={wager}
-                onChange={(e) => setWager(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-200 p-2 pl-7 text-black placeholder-gray-200 shadow-sm"
-                placeholder="10"
-                required
-              />
+            <div className="mt-2 flex justify-between">
+              <button
+                type="button"
+                onClick={() => handleDateAddition(1)}
+                className="text-xs text-blue-500 underline"
+              >
+                1 day
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDateAddition(7)}
+                className="text-xs text-blue-500 underline"
+              >
+                7 days
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDateAddition(90)}
+                className="text-xs text-blue-500 underline"
+              >
+                90 days
+              </button>
             </div>
           </div>
 
-          <div className="mb-4 w-1/2 pl-2">
-            <label className="block text-black">Enter Probability (%):</label>
-            <input
-              type="number"
-              value={probability}
-              onChange={(e) =>
-                setProbability(e.target.value ? parseInt(e.target.value) : "")
-              }
-              className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-300"
-              placeholder="(0-100)%"
-              min="0"
-              max="100"
-              required
-            />
-          </div>
-        </div>
+        <h1 className="my-4 text-xl font-bold">Your Bet</h1>
+
+        <BetInput
+          name=""
+          selectedButton={selectedButton}
+          wager={wager}
+          probability={probability}
+          onNameChange={() => {}} // Not used for main user
+          onButtonClick={handleButtonClick}
+          onWagerChange={setWager}
+          onProbabilityChange={setProbability}
+        />
 
         <button
           type="button"
@@ -231,90 +182,17 @@ const BetForm = () => {
           <div key={index} className="mb-4">
             <h1 className="my-4 text-xl font-bold">Participant {index + 1}</h1>
 
-            <div className="mb-4">
-              <label className="block text-black">Name:</label>
-              <input
-                type="text"
-                value={participant.name}
-                onChange={(e) =>
-                  handleParticipantChange(index, "name", e.target.value)
-                }
-                className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-300"
-                placeholder="Enter participant name"
-                required
-              />
-            </div>
-
-            <div className="mb-4 flex">
-              <button
-                type="button"
-                onClick={() =>
-                  handleParticipantChange(index, "selectedButton", "yes")
-                }
-                className={`m-1 w-1/2 h-10 rounded-md border-2 shadow-sm ${
-                  participant.selectedButton === "yes"
-                    ? "bg-green-500 text-black"
-                    : "text-black hover:bg-green-200"
-                }`}
-              >
-                ✅ Yes
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleParticipantChange(index, "selectedButton", "no")
-                }
-                className={`m-1 w-1/2 h-10 rounded-md border-2 shadow-sm ${
-                  participant.selectedButton === "no"
-                    ? "bg-red-500 text-black"
-                    : "text-black hover:bg-red-200"
-                }`}
-              >
-                ❌ No
-              </button>
-            </div>
-
-            <div className="flex mb-3">
-              <div className="mb-4 w-1/2 pr-2">
-                <label className="block text-black">Wager ($):</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                    $
-                  </span>
-                  <input
-                    type="text"
-                    value={participant.wager}
-                    onChange={(e) =>
-                      handleParticipantChange(index, "wager", e.target.value)
-                    }
-                    className="mt-1 block w-full rounded-md border border-gray-200 p-2 pl-7 text-black placeholder-gray-200 shadow-sm"
-                    placeholder="10"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4 w-1/2 pl-2">
-                <label className="block text-black">Enter Probability (%):</label>
-                <input
-                  type="number"
-                  value={participant.probability}
-                  onChange={(e) =>
-                    handleParticipantChange(
-                      index,
-                      "probability",
-                      e.target.value ? parseInt(e.target.value) : ""
-                    )
-                  }
-                  className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-300"
-                  placeholder="(0-100)%"
-                  min="0"
-                  max="100"
-                  required
-                />
-              </div>
-            </div>
+            <BetInput
+              name={participant.name}
+              selectedButton={participant.selectedButton}
+              wager={participant.wager}
+              probability={participant.probability}
+              onNameChange={(value) => handleParticipantChange(index, "name", value)}
+              onButtonClick={(button) => handleParticipantChange(index, "selectedButton", button)}
+              onWagerChange={(value) => handleParticipantChange(index, "wager", value)}
+              onProbabilityChange={(value) => handleParticipantChange(index, "probability", value?.toString() ?? null)}
+              showName={true}
+            />
           </div>
         ))}
 
