@@ -35,7 +35,6 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
         affirmativePot,
         negativePot,
         pot,
-
       };
 
       setBets(betinfo);
@@ -207,3 +206,4 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
     </div>
   );
 }
+
