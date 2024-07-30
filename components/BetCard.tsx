@@ -1,38 +1,16 @@
-import { userNamesFromIds } from "@/actions";
 import React from "react";
 
-interface BetCardProps {
-  bet: {
-    id: string;
-    title: string;
-    created_at: string;
-    resolve_condition: string;
-    resolve_deadline: string;
-    resolve_status: number;
-    affirmative_user_clerk_ids: string[];
-    affirmative_user_wagers: number[];
-    negative_user_clerk_ids: string[];
-    negative_user_wagers: number[];
-  };
-}
+import { BetInfoType } from "@/db/queries";
 
-const BetCard: React.FC<BetCardProps> = async ({ bet }) => {
-  const affirmativeUsernames = await userNamesFromIds(bet.affirmative_user_clerk_ids);
-  const negativeUsernames = await userNamesFromIds(bet.negative_user_clerk_ids);
+export default async function BetCard({ bet }: { bet: BetInfoType }) {
+  const [resolveStatusText, resolveStatusColor] =
+    bet.resolved === 0
+      ? ["Unresolved", "bg-orange-600"]
+      : bet.resolved === 1
+        ? ["Resolved Negatively", "bg-red-600"]
+        : ["Resolved Affirmatively", "bg-green-600"];
 
-  const resolveStatusText = 
-    bet.resolve_status === 0 ? "Unresolved" :
-    bet.resolve_status === 1 ? "Resolved Affirmatively" :
-    "Resolved Negatively";
-
-  const resolveStatusColor = 
-    bet.resolve_status === 0 ? "bg-orange-600" :
-    bet.resolve_status === 1 ? "bg-green-600" :
-    "bg-red-600";
-
-  const totalWager = 
-    bet.affirmative_user_wagers.reduce((sum, wager) => sum + wager, 0) +
-    bet.negative_user_wagers.reduce((sum, wager) => sum + wager, 0);
+  const pot = bet.wagers.reduce((sum, wager) => sum + wager.amountUSD, 0);
 
   return (
     <div className="bet-card mb-6 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
@@ -40,44 +18,49 @@ const BetCard: React.FC<BetCardProps> = async ({ bet }) => {
         <h2 className="text-xl font-bold text-white">{bet.title}</h2>
       </div>
       <div className="p-6">
-        <p className="mb-4 text-sm text-gray-600">{bet.resolve_condition}</p>
+        <p className="mb-4 text-sm text-gray-600">{bet.resolveCondition}</p>
         <div className="mb-4 flex justify-between text-sm">
           <p>
             <span className="font-semibold">Created:</span>{" "}
-            {new Date(bet.created_at).toLocaleDateString()}
+            {new Date(bet.createdAt).toLocaleDateString()}
           </p>
           <p>
             <span className="font-semibold">Resolve Deadline:</span>{" "}
-            {new Date(bet.resolve_deadline).toLocaleDateString()}
+            {new Date(bet.resolveDeadline).toLocaleDateString()}
           </p>
           <p>
             <span className="font-semibold">Status:</span> {resolveStatusText}
           </p>
         </div>
         <div className="mb-4">
-          <h3 className="mb-2 text-lg font-semibold">Total Wager: ${totalWager.toFixed(2)}</h3>
+          <h3 className="mb-2 text-lg font-semibold">
+            Pot: ${pot}
+          </h3>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="rounded-md bg-green-100 p-4">
             <h4 className="mb-2 font-semibold text-green-700">Yes</h4>
-            {affirmativeUsernames.map((user, index) => (
-              <p key={index} className="text-sm">
-                {user}: ${bet.affirmative_user_wagers[index].toFixed(2)}
-              </p>
-            ))}
+            {/* FIXME: key being the counter of a map is wrong? */}
+            {bet.wagers
+              .filter((wager) => wager.side)
+              .map((wager, index) => (
+                <p key={index} className="text-sm">
+                  {wager.user!.name}: ${wager.amountUSD}
+                </p>
+              ))}
           </div>
           <div className="rounded-md bg-red-100 p-4">
             <h4 className="mb-2 font-semibold text-red-700">No</h4>
-            {negativeUsernames.map((user, index) => (
-              <p key={index} className="text-sm">
-                {user}: ${bet.negative_user_wagers[index].toFixed(2)}
-              </p>
-            ))}
+            {bet.wagers
+              .filter((wager) => !wager.side)
+              .map((wager, index) => (
+                <p key={index} className="text-sm">
+                  {wager.user!.name}: ${wager.amountUSD}
+                </p>
+              ))}
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default BetCard;
+}
