@@ -11,7 +11,7 @@ export async function createBetAndWagerFromForm(
 
   wager: number, // in whole USD
   side: boolean,
-  odds: number | undefined, // in whole percent e.g. 60%, NOT 60.5%
+  odds?: number, // in whole percent e.g. 60%, NOT 60.5%
 ) {
   const { userId } = auth();
   if (!userId) {
