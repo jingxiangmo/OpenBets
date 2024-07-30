@@ -193,7 +193,7 @@ const BetForm = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-black">Opponent's Wager ($):</label>
+          <label className="block text-black">Opponent&apos;s Wager ($):</label>
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
               $
