@@ -67,7 +67,7 @@ const BetInput: React.FC<BetInputProps> = ({
 
       <div className="flex mb-3">
         <div className="mb-4 w-1/2 pr-2">
-          <label className="block text-black">Wager ($):</label>
+          <label className=" block text-black">Wager ($):</label>
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
               $
