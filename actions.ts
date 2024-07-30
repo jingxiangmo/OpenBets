@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 
-import { createBetAndWager } from "./db/queries";
+import { createBetAndWager, resolveBet } from "./db/queries";
 import * as schema from "./db/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
@@ -29,6 +29,20 @@ export async function getBet(betId: number) {
       },
     }
   })
+}
+
+export async function updateBetResolutionFromBetPage(betId: number, resolution: number) {
+  const { userId } = auth();
+  if (!userId) {
+    throw new Error("Unautorized");
+  }
+
+  // TODO: remove once db enforces this with check constraint
+  if (resolution !== 0 && resolution !== 1 && resolution !== 2) {
+    throw new Error("Invalid resolution, must be 0, 1, or 2");
+  }
+
+  await resolveBet(userId, betId, resolution);
 }
 
 export async function createBetAndWagerFromForm(
