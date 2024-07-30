@@ -4,6 +4,33 @@ import { db } from ".";
 import * as schema from "./schema";
 import { eq } from "drizzle-orm";
 
+// TODO: sort by creation or modified date
+export async function getUsersBetsAndWagers(clerkId: string) {
+  return await db.query.betsTable.findMany({
+    where: eq(schema.betsTable.createdById, clerkId),
+    columns: {
+      createdById: false,
+    },
+    with: {
+      wagers: {
+        columns: {
+          betId: false,
+          userId: false,
+        },
+        with: {
+          user: {
+            columns: {
+              clerkId: false,
+            },
+          },
+        },
+      },
+    }
+  })
+}
+
+export type BetInfoType = Awaited<ReturnType<typeof getUsersBetsAndWagers>>[number];
+
 export async function createUser(user: schema.InsertUser) {
   return await db.insert(schema.usersTable).values(user);
 }
