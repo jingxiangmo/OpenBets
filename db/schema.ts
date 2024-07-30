@@ -6,18 +6,18 @@ import {
   text,
 } from 'drizzle-orm/sqlite-core';
 
-export const usersTable = sqliteTable('users', {
+export const users = sqliteTable('users', {
   clerkId: text('clerk_id').primaryKey(),
   name: text('name').notNull(),
 });
 
-export const usersRelations = relations(usersTable, ({ many }) => ({
-  wagers: many(wagersTable),
+export const userRelations = relations(users, ({ many }) => ({
+  wagers: many(wagers),
 }));
 
-export const betsTable = sqliteTable("bets", {
+export const bets = sqliteTable("bets", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  createdById: text("created_by").references(() => usersTable.clerkId),
+  createdById: text("created_by").references(() => users.clerkId),
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`(unixepoch())`)
     .notNull(),
@@ -32,19 +32,19 @@ export const betsTable = sqliteTable("bets", {
   resolved: integer("resolved", { mode: "number" }).default(0), // 0 = unresolved, 1 = negative, 2 = affirmative
 });
 
-export const betsRelations = relations(betsTable, ({ one, many }) => ({
-  createdBy: one(usersTable, {
-    fields: [betsTable.createdById],
-    references: [usersTable.clerkId],
+export const betRelations = relations(bets, ({ one, many }) => ({
+  createdBy: one(users, {
+    fields: [bets.createdById],
+    references: [users.clerkId],
   }),
-  wagers: many(wagersTable),
+  wagers: many(wagers),
 }));
 
-export const wagersTable = sqliteTable(
+export const wagers = sqliteTable(
   "wagers",
   {
-    betId: integer("bet_id").references(() => betsTable.id, { onDelete: "cascade" }),
-    userId: text("user_id").references(() => usersTable.clerkId),
+    betId: integer("bet_id").references(() => bets.id, { onDelete: "cascade" }),
+    userId: text("user_id").references(() => users.clerkId),
     createdAt: integer("created_at", { mode: "timestamp" })
       .default(sql`(unixepoch())`)
       .notNull(),
@@ -61,23 +61,23 @@ export const wagersTable = sqliteTable(
   }),
 );
 
-export const wagersRelations = relations(wagersTable, ({ one }) => ({
-  bet: one(betsTable, {
-    fields: [wagersTable.betId],
-    references: [betsTable.id],
+export const wagerRelations = relations(wagers, ({ one }) => ({
+  bet: one(bets, {
+    fields: [wagers.betId],
+    references: [bets.id],
   }),
-  user: one(usersTable, {
-    fields: [wagersTable.userId],
-    references: [usersTable.clerkId],
+  user: one(users, {
+    fields: [wagers.userId],
+    references: [users.clerkId],
   }),
 }));
 
 
-export type InsertUser = typeof usersTable.$inferInsert;
-export type SelectUser = typeof usersTable.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
+export type SelectUser = typeof users.$inferSelect;
 
-export type InsertBet = typeof betsTable.$inferInsert;
-export type SelectBet = typeof betsTable.$inferSelect;
+export type InsertBet = typeof bets.$inferInsert;
+export type SelectBet = typeof bets.$inferSelect;
 
-export type InsertWager = typeof wagersTable.$inferInsert;
-export type SelectWager = typeof wagersTable.$inferSelect;
+export type InsertWager = typeof wagers.$inferInsert;
+export type SelectWager = typeof wagers.$inferSelect;

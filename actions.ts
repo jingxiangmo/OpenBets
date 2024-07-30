@@ -8,8 +8,8 @@ import { db } from "./db";
 import { eq } from "drizzle-orm";
 
 export async function getBet(betId: number) {
-  return await db.query.betsTable.findFirst({
-    where: eq(schema.betsTable.id, betId),
+  return await db.query.bets.findFirst({
+    where: eq(schema.bets.id, betId),
     columns: {
       createdById: false,
     },

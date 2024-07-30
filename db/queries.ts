@@ -7,11 +7,11 @@ import { and, eq } from "drizzle-orm";
 // resolution: 0 = unresolved, 1 = affirmative, 2 = negative
 // make sure to check this input before calling this function
 export async function resolveBet(clerkId: string, betId: number, resolution: number) {
-  return await db.update(schema.betsTable).set({
+  return await db.update(schema.bets).set({
     resolved: resolution,
   }).where(and(
-    eq(schema.betsTable.id, betId),
-    eq(schema.betsTable.createdById, clerkId),
+    eq(schema.bets.id, betId),
+    eq(schema.bets.createdById, clerkId),
   ));
 }
 
@@ -20,8 +20,8 @@ export type BetInfoType = Awaited<ReturnType<typeof getUsersBetsAndWagers>>[numb
 
 // TODO: sort by creation or modified date
 export async function getUsersBetsAndWagers(clerkId: string) {
-  return await db.query.betsTable.findMany({
-    where: eq(schema.betsTable.createdById, clerkId),
+  return await db.query.bets.findMany({
+    where: eq(schema.bets.createdById, clerkId),
     columns: {
       createdById: false,
     },
@@ -44,22 +44,22 @@ export async function getUsersBetsAndWagers(clerkId: string) {
 }
 
 export async function createUser(user: schema.InsertUser) {
-  return await db.insert(schema.usersTable).values(user);
+  return await db.insert(schema.users).values(user);
 }
 
 export async function updateUser({ name, clerkId }: schema.InsertUser) {
   return await db
-    .update(schema.usersTable)
+    .update(schema.users)
     .set({
       name,
     })
-    .where(eq(schema.usersTable.clerkId, clerkId!));
+    .where(eq(schema.users.clerkId, clerkId!));
 }
 
 export async function deleteClerkUser(clerkId: string) {
   return await db
-    .delete(schema.usersTable)
-    .where(eq(schema.usersTable.clerkId, clerkId));
+    .delete(schema.users)
+    .where(eq(schema.users.clerkId, clerkId));
 }
 
 export async function createBetAndWager(
@@ -69,16 +69,16 @@ export async function createBetAndWager(
 ) {
   return await db.transaction(async (tx) => {
     const [{ insertedBetId }] = await tx
-      .insert(schema.betsTable)
+      .insert(schema.bets)
       .values({
         createdById: clerkId,
         title,
         resolveCondition,
         resolveDeadline,
       })
-      .returning({ insertedBetId: schema.betsTable.id });
+      .returning({ insertedBetId: schema.bets.id });
 
-    await tx.insert(schema.wagersTable).values({
+    await tx.insert(schema.wagers).values({
       betId: insertedBetId,
       userId: clerkId,
       amountUSD,
