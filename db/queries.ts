@@ -15,6 +15,8 @@ export async function resolveBet(clerkId: string, betId: number, resolution: num
   ));
 }
 
+// TODO: de-duplicate and make not terrifying
+export type BetInfoType = Awaited<ReturnType<typeof getUsersBetsAndWagers>>[number];
 
 // TODO: sort by creation or modified date
 export async function getUsersBetsAndWagers(clerkId: string) {
@@ -40,8 +42,6 @@ export async function getUsersBetsAndWagers(clerkId: string) {
     }
   })
 }
-
-export type BetInfoType = Awaited<ReturnType<typeof getUsersBetsAndWagers>>[number];
 
 export async function createUser(user: schema.InsertUser) {
   return await db.insert(schema.usersTable).values(user);
