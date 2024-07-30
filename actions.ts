@@ -3,6 +3,33 @@
 import { auth } from "@clerk/nextjs/server";
 
 import { createBetAndWager } from "./db/queries";
+import * as schema from "./db/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+
+export async function getBet(betId: number) {
+  return await db.query.betsTable.findFirst({
+    where: eq(schema.betsTable.id, betId),
+    columns: {
+      createdById: false,
+    },
+    with: {
+      wagers: {
+        columns: {
+          betId: false,
+          userId: false,
+        },
+        with: {
+          user: {
+            columns: {
+              clerkId: false,
+            },
+          },
+        },
+      },
+    }
+  })
+}
 
 export async function createBetAndWagerFromForm(
   title: string,
