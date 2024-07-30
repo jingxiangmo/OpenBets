@@ -2,7 +2,19 @@ import "server-only";
 
 import { db } from ".";
 import * as schema from "./schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+
+// resolution: 0 = unresolved, 1 = affirmative, 2 = negative
+// make sure to check this input before calling this function
+export async function resolveBet(clerkId: string, betId: number, resolution: number) {
+  return await db.update(schema.betsTable).set({
+    resolved: resolution,
+  }).where(and(
+    eq(schema.betsTable.id, betId),
+    eq(schema.betsTable.createdById, clerkId),
+  ));
+}
+
 
 // TODO: sort by creation or modified date
 export async function getUsersBetsAndWagers(clerkId: string) {
