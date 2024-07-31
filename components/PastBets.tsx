@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import BetCard from "./BetCard";
 import Link from "next/link";
+import Button from "./Button";
 
 import { getUsersBetsAndWagers } from "@/db/queries";
 
@@ -23,9 +24,10 @@ export default async function PastBets() {
           <Link
             key={bet.id}
             href={`/bet/${bet.id}`}
-            className="block transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg"
           >
-            <BetCard bet={bet} />
+            <Button color="bg-white" className="w-full" >
+              <BetCard bet={bet} />
+            </Button>
           </Link>
         ))
       )}

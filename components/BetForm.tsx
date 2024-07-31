@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSession, useUser } from "@clerk/nextjs";
 import {
   SignUpButton,
@@ -8,8 +8,17 @@ import {
   SignedOut,
   SignOutButton,
 } from "@clerk/nextjs";
+import BetInput from './BetInput';
+import Button from './Button';
 
 import { createBetAndWagerFromForm } from "../actions";
+
+interface Participant {
+  name: string;
+  selectedButton: string | null;
+  wager: string;
+  probability: number | "";
+}
 
 const BetForm = () => {
   const { user } = useUser();
@@ -19,9 +28,9 @@ const BetForm = () => {
   const [resolveBy, setResolveBy] = useState("");
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [wager, setWager] = useState("");
-  const [negativeUserId, setNegativeUserId] = useState("");
-  const [negativeWager, setNegativeWager] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [probability, setProbability] = useState<number | "">(""); // Added state for probability
+  const [participants, setParticipants] = useState<Participant[]>([]);
 
   const handleButtonClick = (button: string) => {
     setSelectedButton(button);
@@ -55,8 +64,7 @@ const BetForm = () => {
       setResolveBy("");
       setSelectedButton(null);
       setWager("");
-      setNegativeUserId("");
-      setNegativeWager("");
+      setProbability(""); // Reset probability
       // Show modal
       setShowModal(true);
       // Refresh the page after a short delay
@@ -68,165 +76,122 @@ const BetForm = () => {
     }
   };
 
-  return (
-    <div className="p-8 sm:w-3/4 md:w-2/3 lg:w-1/2">
-      <h2 className="mb-8 text-4xl font-bold">Create a Bet</h2>
+  const handleAddParticipant = () => {
+    setParticipants([...participants, { name: "", selectedButton: null, wager: "", probability: "" }]);
+  };
 
-      <form onSubmit={handleSubmit}>
+  const handleParticipantChange = (index: number, field: string, value: string | null) => {
+    setParticipants(
+      participants.map((participant, i) => {
+        if (i === index) {
+          return { ...participant, [field]: value };
+        }
+        return participant;
+      })
+    );
+  };
+
+  return (
+    <div className="px-4 sm:px-8 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 mx-auto">
+      <h2 className="mb-6 text-3xl sm:text-4xl font-bold text-gray-800">Create a Bet</h2>
+
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg p-4 sm:p-6 border border-gray-300">
         <div className="mb-4">
-          <label className="block text-black">Bet Topic:</label>
+          <label className="block text-gray-700 font-bold mb-2">Bet Topic:</label>
           <textarea
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
-            className="mt-1 block h-20 w-full rounded-md border p-2 text-black placeholder-gray-300"
+            className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
             placeholder="Will Fraser and Guilia date by the end of 2024?"
-            rows={4}
+            rows={2}
             required
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-black">
-            Resolve Condition (Optional):
-          </label>
-          <textarea
-            value={resolveCondition}
-            onChange={(e) => setResolveCondition(e.target.value)}
-            className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-300"
-            placeholder="Condition for resolving the bet"
-            rows={4}
-          />
-        </div>
-
-        <h1 className="my-4 text-xl font-bold">Your Bet</h1>
-
-        <div className="mb-4 flex">
-          <button
-            type="button"
-            onClick={() => handleButtonClick("yes")}
-            className={`m-1 w-1/2 rounded-md border-2 py-2 shadow-sm ${
-              selectedButton === "yes"
-                ? "bg-green-500 text-black"
-                : "text-black hover:bg-green-200"
-            }`}
-          >
-            ✅ Yes
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleButtonClick("no")}
-            className={`m-1 w-1/2 rounded-md border-2 py-2 shadow-sm ${
-              selectedButton === "no"
-                ? "bg-red-500 text-black"
-                : "text-black hover:bg-red-200"
-            }`}
-          >
-            ❌ No
-          </button>
-        </div>
-
-        <div className="flex gap-3">
-          <div className="mb-4 w-1/2">
-            <label className="block text-black">Wager ($):</label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                $
-              </span>
-              <input
-                type="text"
-                value={wager}
-                onChange={(e) => setWager(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-200 p-2 pl-7 text-black placeholder-gray-200 shadow-sm"
-                placeholder="10"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="mb-4 w-1/2">
-            <label className="block text-black">Resolve by:</label>
-            <input
-              type="date"
-              value={resolveBy}
-              onChange={(e) => setResolveBy(e.target.value)}
-              className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-100"
-              required
-              style={{ color: resolveBy === "" ? "#d3d3d3" : "black" }}
-            />
-
-            <div className="mt-2 flex justify-between">
-              <button
-                type="button"
-                onClick={() => handleDateAddition(1)}
-                className="text-xs text-blue-500 underline"
-              >
-                1 day
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDateAddition(7)}
-                className="text-xs text-blue-500 underline"
-              >
-                7 days
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDateAddition(90)}
-                className="text-xs text-blue-500 underline"
-              >
-                90 days
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <h1 className="my-4 text-xl font-bold">Opponent Bet</h1>
-
-        <div className="mb-4">
-          <label className="block text-black">Opponent Name</label>
+        <div className="mb-4 w-full sm:w-2/5">
+          <label className="block text-gray-700 font-bold mb-2">Resolve by:</label>
           <input
-            type="text"
-            value={negativeUserId}
-            onChange={(e) => setNegativeUserId(e.target.value)}
-            className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-300"
-            placeholder="name"
+            type="date"
+            value={resolveBy}
+            onChange={(e) => setResolveBy(e.target.value)}
+            className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+            required
+            style={{ color: resolveBy === "" ? "#a0aec0" : "black" }}
           />
-        </div>
 
-        <div className="mb-4">
-          <label className="block text-black">Opponent&apos;s Wager ($):</label>
-          <div className="relative">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-              $
-            </span>
-            <input
-              type="text"
-              value={negativeWager}
-              onChange={(e) => setNegativeWager(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-gray-200 p-2 pl-7 text-black placeholder-gray-200 shadow-sm"
-              placeholder="10"
-            />
+          <div className="mt-2 flex justify-between">
+            <button
+              type="button"
+              onClick={() => handleDateAddition(1)}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              1 day
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDateAddition(7)}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              7 days
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDateAddition(90)}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              90 days
+            </button>
           </div>
         </div>
+
+        <h1 className="my-4 text-xl sm:text-2xl font-bold text-gray-800">Your Bet</h1>
+
+        <BetInput
+          name=""
+          selectedButton={selectedButton}
+          wager={wager}
+          probability={probability}
+          onNameChange={() => {}} // Not used for main user
+          onButtonClick={handleButtonClick}
+          onWagerChange={setWager}
+          onProbabilityChange={setProbability}
+        />
+
+        <div className="justify-center mb-4">
+          <Button onClick={handleAddParticipant} color="bg-gray-200" className="w-full">
+            + Add Participants
+          </Button>
+        </div>
+
+        {participants.map((participant, index) => (
+          <div key={index} className="mb-4 bg-gray-50 rounded-lg p-3 sm:p-4">
+            <h1 className="my-3 text-lg sm:text-xl font-bold text-gray-800">Participant {index + 1}</h1>
+
+            <BetInput
+              name={participant.name}
+              selectedButton={participant.selectedButton}
+              wager={participant.wager}
+              probability={participant.probability}
+              onNameChange={(value) => handleParticipantChange(index, "name", value)}
+              onButtonClick={(button) => handleParticipantChange(index, "selectedButton", button)}
+              onWagerChange={(value) => handleParticipantChange(index, "wager", value)}
+              onProbabilityChange={(value) => handleParticipantChange(index, "probability", value?.toString() ?? null)}
+              showName={true}
+            />
+          </div>
+        ))}
 
         <SignedIn>
-          <button
-            type="submit"
-            className="mx-auto my-5 h-12 w-full transform rounded-md bg-blue-500 py-2 text-white transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95"
-          >
+          <Button type="submit" className="mx-auto my-4 h-12 w-full">
             🤝 Open Bet
-          </button>
+          </Button>
         </SignedIn>
 
         <SignedOut>
           <SignUpButton>
-            <button
-              type="button"
-              className="mx-auto my-5 h-12 w-full transform rounded-md bg-blue-500 py-2 text-white transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95"
-            >
+            <Button className="mx-auto my-4 h-12 w-full">
               🤝 Signup to Bet
-            </button>
+            </Button>
           </SignUpButton>
         </SignedOut>
       </form>
