@@ -59,7 +59,7 @@ export async function createBetAndWagerFromForm(
     throw new Error("Unautorized");
   }
 
-  if (title.length === 0 || title.length > 1024) {
+  if (title.length === 0 || title.length > 4096) {
     throw new Error("Title must be between 1 and 1024 characters");
   }
 
@@ -75,7 +75,7 @@ export async function createBetAndWagerFromForm(
 
   if (odds) {
     odds = Math.round(odds); // odds only in whole percent e.g. 60%, NOT 60.5%
-    if (odds <= 1 || odds >= 99) {
+    if (odds < 0 || odds > 100) {
       throw new Error("Odds must be between 1 and 99");
     }
   }
