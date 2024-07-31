@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import BetCard from "./BetCard";
 import Link from "next/link";
+import Button from './Button';
 
 import { getUsersBetsAndWagers } from "@/db/queries";
 
@@ -20,13 +21,14 @@ export default async function PastBets() {
         <p className="text-xl">No bets yet! Go bet your friends</p>
       ) : (
         bets.map((bet) => (
-          <Link
-            key={bet.id}
-            href={`/bet/${bet.id}`}
-            className="block transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg"
-          >
-            <BetCard bet={bet} />
-          </Link>
+          <Button key={bet.id} className="w-full mb-4">
+            <Link
+              href={`/bet/${bet.id}`}
+              className="block w-full h-full"
+            >
+              <BetCard bet={bet} />
+            </Link>
+          </Button>
         ))
       )}
     </div>

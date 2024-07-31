@@ -1,4 +1,5 @@
 import { SignUpButton } from "@clerk/nextjs";
+import Button from './Button';
 
 const LandingPage = () => {
   return (
@@ -8,9 +9,9 @@ const LandingPage = () => {
         Gonna bet your friend? We shall see...
       </p>
       <SignUpButton>
-        <button className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-md transition duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95">
+        <Button className="bg-gray-800 hover:bg-gray-700 text-white">
           🤝 Signup to Bet
-        </button>
+        </Button>
       </SignUpButton>
     </div>
   );

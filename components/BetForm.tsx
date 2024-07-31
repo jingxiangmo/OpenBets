@@ -9,6 +9,7 @@ import {
   SignOutButton,
 } from "@clerk/nextjs";
 import BetInput from './BetInput';
+import Button from './Button';
 
 import { createBetAndWagerFromForm } from "../actions";
 
@@ -170,13 +171,9 @@ const BetForm = () => {
           onProbabilityChange={setProbability}
         />
 
-        <button
-          type="button"
-          onClick={handleAddParticipant}
-          className="mb-4 w-full rounded-md bg-blue-500 px-4 py-2 text-white transition duration-300 hover:bg-blue-600"
-        >
+        <Button onClick={handleAddParticipant} color="bg-gray-500" className="mb-4 w-1/2">
           + Add Participants
-        </button>
+        </Button>
 
         {participants.map((participant, index) => (
           <div key={index} className="mb-4">
@@ -197,22 +194,16 @@ const BetForm = () => {
         ))}
 
         <SignedIn>
-          <button
-            type="submit"
-            className="mx-auto my-5 h-12 w-full transform rounded-md bg-blue-500 py-2 text-white transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95"
-          >
+          <Button type="submit" className="mx-auto my-5 h-12 w-full">
             🤝 Open Bet
-          </button>
+          </Button>
         </SignedIn>
 
         <SignedOut>
           <SignUpButton>
-            <button
-              type="button"
-              className="mx-auto my-5 h-12 w-full transform rounded-md bg-blue-500 py-2 text-white transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95"
-            >
+            <Button className="mx-auto my-5 h-12 w-full">
               🤝 Signup to Bet
-            </button>
+            </Button>
           </SignUpButton>
         </SignedOut>
       </form>
