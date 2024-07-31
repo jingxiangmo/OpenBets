@@ -6,11 +6,13 @@ interface ButtonProps {
   isPressed?: boolean;
   className?: string;
   color?: string;
+  type?: "submit" | "reset" | "button"
 }
 
-const Button: React.FC<ButtonProps> = ({ onClick, children, isPressed = false, className = '', color = 'bg-yellow-300' }) => {
+const Button: React.FC<ButtonProps> = ({ type, onClick, children, isPressed = false, className = '', color = 'bg-yellow-300' }) => {
   return (
     <button
+      type={type}
       onClick={onClick}
       className={`m-2 p-0 rounded-md border-none bg-gray-700 text-[#1e3050] ${className}`}
       data-pressed={isPressed}
