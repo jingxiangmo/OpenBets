@@ -103,12 +103,12 @@ const BetForm = () => {
             onChange={(e) => setTopic(e.target.value)}
             className="mt-1 block h-20 w-full rounded-md border p-2 text-black placeholder-gray-300"
             placeholder="Will Fraser and Guilia date by the end of 2024?"
-            rows={4}
+            rows={1}
             required
           />
         </div>
 
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-black">
             Resolve Condition (Optional):
           </label>
@@ -119,7 +119,7 @@ const BetForm = () => {
             placeholder="Condition for resolving the bet"
             rows={4}
           />
-        </div>
+        </div> */}
 
 
         <div className="mb-4 w-2/5">
@@ -158,7 +158,7 @@ const BetForm = () => {
             </div>
           </div>
 
-        <h1 className="my-4 text-xl font-bold">Your Bet</h1>
+        <h1 className="my-4 text-2xl font-bold">Your Bet</h1>
 
         <BetInput
           name=""
@@ -171,9 +171,11 @@ const BetForm = () => {
           onProbabilityChange={setProbability}
         />
 
-        <Button onClick={handleAddParticipant} color="bg-gray-500" className="mb-4 w-1/2">
-          + Add Participants
-        </Button>
+        <div className=" justify-center mb-4">
+          <Button onClick={handleAddParticipant} color="bg-gray-200" className="w-1/2">
+            + Add Participants
+          </Button>
+        </div>
 
         {participants.map((participant, index) => (
           <div key={index} className="mb-4">

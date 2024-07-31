@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from './Button';
 
 interface BetInputProps {
   name: string;
@@ -40,29 +41,21 @@ const BetInput: React.FC<BetInputProps> = ({
       )}
 
       <div className="mb-4 flex">
-        <button
-          type="button"
+        <Button
           onClick={() => onButtonClick("yes")}
-          className={`m-1 w-1/2 h-10 rounded-md border-2 shadow-sm ${
-            selectedButton === "yes"
-              ? "bg-green-500 text-black"
-              : "text-black hover:bg-green-200"
-          }`}
+          color={selectedButton === "yes" ? "bg-green-500" : "bg-green-50"}
+          className="m-1 w-1/2"
         >
           ✅ Yes
-        </button>
+        </Button>
 
-        <button
-          type="button"
+        <Button
           onClick={() => onButtonClick("no")}
-          className={`m-1 w-1/2 h-10 rounded-md border-2 shadow-sm ${
-            selectedButton === "no"
-              ? "bg-red-500 text-black"
-              : "text-black hover:bg-red-200"
-          }`}
+          color={selectedButton === "no" ? "bg-red-500" : "bg-red-50"}
+          className="m-1 w-1/2"
         >
           ❌ No
-        </button>
+        </Button>
       </div>
 
       <div className="flex mb-3">
@@ -91,7 +84,7 @@ const BetInput: React.FC<BetInputProps> = ({
             onChange={(e) =>
               onProbabilityChange(e.target.value ? parseInt(e.target.value) : "")
             }
-            className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-300"
+            className="mt-1 block w-full rounded-md border border-gray-200 p-2 pl-7 text-black placeholder-gray-200 shadow-sm"
             placeholder="(0-100)%"
             min="0"
             max="100"

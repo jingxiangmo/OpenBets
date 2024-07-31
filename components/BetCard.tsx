@@ -13,7 +13,7 @@ export default async function BetCard({ bet }: { bet: BetInfoType }) {
   const pot = bet.wagers.reduce((sum, wager) => sum + wager.amountUSD, 0);
 
   return (
-    <div className="bet-card mb-6 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
+    <div>
       <div className={`${resolveStatusColor} p-3`}>
         <h2 className="text-xl font-bold text-white">{bet.title}</h2>
       </div>
