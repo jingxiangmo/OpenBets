@@ -3,13 +3,13 @@
 import { auth } from "@clerk/nextjs/server";
 
 import { createBetAndWager, resolveBet } from "./db/queries";
-import * as schema from "./db/schema";
+import { bets, wagers } from "./db/schema";
 import { db } from "./db";
 import { desc, eq } from "drizzle-orm";
 
 export async function getBet(betId: number) {
   return await db.query.bets.findFirst({
-    where: eq(schema.bets.id, betId),
+    where: eq(bets.id, betId),
     columns: {
       createdById: false,
     },
@@ -19,7 +19,7 @@ export async function getBet(betId: number) {
           betId: false,
           userId: false,
         },
-        orderBy: [desc(schema.wagers.createdAt)],
+        orderBy: [desc(wagers.createdAt)],
         with: {
           user: {
             columns: {

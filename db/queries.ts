@@ -1,17 +1,24 @@
 import "server-only";
 
 import { db } from ".";
-import * as schema from "./schema";
+import {
+  InsertBet,
+  InsertUser,
+  InsertWager,
+  bets,
+  users,
+  wagers,
+} from "./schema";
 import { and, asc, desc, eq } from "drizzle-orm";
 
 // resolution: 0 = unresolved, 1 = affirmative, 2 = negative
 // make sure to check this input before calling this function
 export async function resolveBet(clerkId: string, betId: number, resolution: number) {
-  return await db.update(schema.bets).set({
+  return await db.update(bets).set({
     resolved: resolution,
   }).where(and(
-    eq(schema.bets.id, betId),
-    eq(schema.bets.createdById, clerkId),
+    eq(bets.id, betId),
+    eq(bets.createdById, clerkId),
   ));
 }
 
@@ -21,18 +28,18 @@ export type BetInfoType = Awaited<ReturnType<typeof getUsersBetsAndWagers>>[numb
 // TODO: sort by creation or modified date
 export async function getUsersBetsAndWagers(clerkId: string) {
   return await db.query.bets.findMany({
-    where: eq(schema.bets.createdById, clerkId),
+    where: eq(bets.createdById, clerkId),
     columns: {
       createdById: false,
     },
-    orderBy: [asc(schema.bets.resolveDeadline)],
+    orderBy: [asc(bets.resolveDeadline)],
     with: {
       wagers: {
         columns: {
           betId: false,
           userId: false,
         },
-        orderBy: [desc(schema.wagers.createdAt)],
+        orderBy: [desc(wagers.createdAt)],
         with: {
           user: {
             columns: {
@@ -45,42 +52,42 @@ export async function getUsersBetsAndWagers(clerkId: string) {
   })
 }
 
-export async function createUser(user: schema.InsertUser) {
-  return await db.insert(schema.users).values(user);
+export async function createUser(user: InsertUser) {
+  return await db.insert(users).values(user);
 }
 
-export async function updateUser({ name, clerkId }: schema.InsertUser) {
+export async function updateUser({ name, clerkId }: InsertUser) {
   return await db
-    .update(schema.users)
+    .update(users)
     .set({
       name,
     })
-    .where(eq(schema.users.clerkId, clerkId!));
+    .where(eq(users.clerkId, clerkId!));
 }
 
 export async function deleteClerkUser(clerkId: string) {
   return await db
-    .delete(schema.users)
-    .where(eq(schema.users.clerkId, clerkId));
+    .delete(users)
+    .where(eq(users.clerkId, clerkId));
 }
 
 export async function createBetAndWager(
   clerkId: string, // creator of the bet also makes the initial wager
-  { title, resolveCondition, resolveDeadline }: schema.InsertBet,
-  { amountUSD, side, odds }: schema.InsertWager,
+  { title, resolveCondition, resolveDeadline }: InsertBet,
+  { amountUSD, side, odds }: InsertWager,
 ) {
   return await db.transaction(async (tx) => {
     const [{ insertedBetId }] = await tx
-      .insert(schema.bets)
+      .insert(bets)
       .values({
         createdById: clerkId,
         title,
         resolveCondition,
         resolveDeadline,
       })
-      .returning({ insertedBetId: schema.bets.id });
+      .returning({ insertedBetId: bets.id });
 
-    await tx.insert(schema.wagers).values({
+    await tx.insert(wagers).values({
       betId: insertedBetId,
       userId: clerkId,
       amountUSD,
