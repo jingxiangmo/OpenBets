@@ -6,9 +6,36 @@ import {
   text,
 } from 'drizzle-orm/sqlite-core';
 
+const id = (name: string) => integer(name).primaryKey({ autoIncrement: true });
+const requiredName = (name: string) => text(name).notNull();
+
+const createdAt = integer("created_at", { mode: "timestamp" })
+  .default(sql`(unixepoch())`)
+  .notNull();
+const updatedAt = integer("updatedAt", { mode: "timestamp" }).$onUpdate(
+  () => new Date(),
+);
+
+// TODO: deduplicate into functions that take the name and table field thing
+const userReference = (name: string) =>
+  integer(name).references(() => users.id, {
+    onDelete: "no action",
+  });
+const userCascadeReference = (name: string) =>
+  integer(name).references(() => users.id, {
+    onDelete: "cascade",
+  });
+const betReference = (name: string) =>
+  integer(name).references(() => bets.id);
+const betCascadeReference = (name: string) =>
+  integer(name).references(() => bets.id, {
+    onDelete: "cascade",
+  });
+
 export const users = sqliteTable('users', {
-  clerkId: text('clerk_id').primaryKey(),
-  name: text('name').notNull(),
+  id: id("id"),
+  clerkId: text('clerk_id').unique(),
+  name: requiredName("name"),
 });
 
 export const userRelations = relations(users, ({ many }) => ({
@@ -16,16 +43,12 @@ export const userRelations = relations(users, ({ many }) => ({
 }));
 
 export const bets = sqliteTable("bets", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  createdById: text("created_by").references(() => users.clerkId),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .default(sql`(unixepoch())`)
-    .notNull(),
-  updatedAt: integer("updatedAt", { mode: "timestamp" }).$onUpdate(
-    () => new Date(),
-  ),
+  id: id("id"),
+  createdById: userReference("created_by"),
+  createdAt,
+  updatedAt,
 
-  title: text("title").notNull(),
+  title: requiredName("title"),
   resolveDeadline: integer("resolve_deadline", { mode: "timestamp" }).notNull(),
 
   resolved: integer("resolved", { mode: "number" }).default(0), // 0 = unresolved, 1 = negative, 2 = affirmative
@@ -34,7 +57,7 @@ export const bets = sqliteTable("bets", {
 export const betRelations = relations(bets, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [bets.createdById],
-    references: [users.clerkId],
+    references: [users.id],
   }),
   wagers: many(wagers),
 }));
@@ -42,14 +65,10 @@ export const betRelations = relations(bets, ({ one, many }) => ({
 export const wagers = sqliteTable(
   "wagers",
   {
-    betId: integer("bet_id").references(() => bets.id, { onDelete: "cascade" }),
-    userId: text("user_id").references(() => users.clerkId),
-    createdAt: integer("created_at", { mode: "timestamp" })
-      .default(sql`(unixepoch())`)
-      .notNull(),
-    updatedAt: integer("updatedAt", { mode: "timestamp" }).$onUpdate(
-      () => new Date(),
-    ),
+    betId: betCascadeReference("bet_id"),
+    userId: userReference("user_id"),
+    createdAt,
+    updatedAt,
 
     amountUSD: integer("amount_USD", { mode: "number" }).notNull(), // in USD
     side: integer("side", { mode: "boolean" }).notNull(), // false = negative, true = affirmative
@@ -67,7 +86,7 @@ export const wagerRelations = relations(wagers, ({ one }) => ({
   }),
   user: one(users, {
     fields: [wagers.userId],
-    references: [users.clerkId],
+    references: [users.id],
   }),
 }));
 
