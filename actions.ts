@@ -1,11 +1,12 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 import { createBetAndWager, resolveBet } from "./db/queries";
 import { bets, wagers } from "./db/schema";
 import { db } from "./db";
 import { desc, eq } from "drizzle-orm";
+import { dbIdFromClerkId } from "./clerkmetadata";
 
 export async function getBet(betId: number) {
   return await db.query.bets.findFirst({
@@ -33,8 +34,8 @@ export async function getBet(betId: number) {
 }
 
 export async function updateBetResolutionFromBetPage(betId: number, resolution: number) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+  if (!user) {
     throw new Error("Unautorized");
   }
 
@@ -43,7 +44,7 @@ export async function updateBetResolutionFromBetPage(betId: number, resolution: 
     throw new Error("Invalid resolution, must be 0, 1, or 2");
   }
 
-  await resolveBet(userId, betId, resolution);
+  await resolveBet(await dbIdFromClerkId(user), betId, resolution);
 }
 
 export async function createBetAndWagerFromForm(
@@ -54,8 +55,8 @@ export async function createBetAndWagerFromForm(
   side: boolean,
   odds?: number, // in whole percent e.g. 60%, NOT 60.5%
 ) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+  if (!user) {
     throw new Error("Unautorized");
   }
 
@@ -81,7 +82,7 @@ export async function createBetAndWagerFromForm(
   }
 
   return await createBetAndWager(
-    userId,
+    await dbIdFromClerkId(user),
     {
       title,
       resolveDeadline,
