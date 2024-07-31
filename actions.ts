@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { createBetAndWager, resolveBet } from "./db/queries";
 import * as schema from "./db/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export async function getBet(betId: number) {
   return await db.query.bets.findFirst({
@@ -19,6 +19,7 @@ export async function getBet(betId: number) {
           betId: false,
           userId: false,
         },
+        orderBy: [desc(schema.wagers.createdAt)],
         with: {
           user: {
             columns: {

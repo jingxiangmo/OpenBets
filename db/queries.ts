@@ -2,7 +2,7 @@ import "server-only";
 
 import { db } from ".";
 import * as schema from "./schema";
-import { and, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 
 // resolution: 0 = unresolved, 1 = affirmative, 2 = negative
 // make sure to check this input before calling this function
@@ -25,12 +25,14 @@ export async function getUsersBetsAndWagers(clerkId: string) {
     columns: {
       createdById: false,
     },
+    orderBy: [asc(schema.bets.resolveDeadline)],
     with: {
       wagers: {
         columns: {
           betId: false,
           userId: false,
         },
+        orderBy: [desc(schema.wagers.createdAt)],
         with: {
           user: {
             columns: {
