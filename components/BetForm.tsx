@@ -24,7 +24,6 @@ const BetForm = () => {
   const { user } = useUser();
   const { session } = useSession();
   const [topic, setTopic] = useState("");
-  const [resolveCondition, setResolveCondition] = useState("");
   const [resolveBy, setResolveBy] = useState("");
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [wager, setWager] = useState("");
@@ -52,7 +51,6 @@ const BetForm = () => {
     try {
       const betId = await createBetAndWagerFromForm(
         topic,
-        resolveCondition,
         new Date(resolveBy),
         parseInt(wager),
         selectedButton === "yes",
@@ -60,7 +58,6 @@ const BetForm = () => {
 
       // Reset form fields
       setTopic("");
-      setResolveCondition("");
       setResolveBy("");
       setSelectedButton(null);
       setWager("");

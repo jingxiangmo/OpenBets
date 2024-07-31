@@ -48,7 +48,6 @@ export async function updateBetResolutionFromBetPage(betId: number, resolution: 
 
 export async function createBetAndWagerFromForm(
   title: string,
-  resolveCondition: string | undefined,
   resolveDeadline: Date,
 
   amountUSD: number, // in whole USD
@@ -62,10 +61,6 @@ export async function createBetAndWagerFromForm(
 
   if (title.length === 0 || title.length > 1024) {
     throw new Error("Title must be between 1 and 1024 characters");
-  }
-
-  if (resolveCondition && resolveCondition.length > 8192) {
-    throw new Error("Resolve must be between 1 and 1024 characters");
   }
 
   // check if date is earlier than now
@@ -89,7 +84,6 @@ export async function createBetAndWagerFromForm(
     userId,
     {
       title,
-      resolveCondition,
       resolveDeadline,
     },
     {

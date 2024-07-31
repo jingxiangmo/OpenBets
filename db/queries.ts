@@ -73,7 +73,7 @@ export async function deleteClerkUser(clerkId: string) {
 
 export async function createBetAndWager(
   clerkId: string, // creator of the bet also makes the initial wager
-  { title, resolveCondition, resolveDeadline }: InsertBet,
+  { title, resolveDeadline }: InsertBet,
   { amountUSD, side, odds }: InsertWager,
 ) {
   return await db.transaction(async (tx) => {
@@ -82,7 +82,6 @@ export async function createBetAndWager(
       .values({
         createdById: clerkId,
         title,
-        resolveCondition,
         resolveDeadline,
       })
       .returning({ insertedBetId: bets.id });

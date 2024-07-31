@@ -26,7 +26,6 @@ export const bets = sqliteTable("bets", {
   ),
 
   title: text("title").notNull(),
-  resolveCondition: text("resolve_condition"),
   resolveDeadline: integer("resolve_deadline", { mode: "timestamp" }).notNull(),
 
   resolved: integer("resolved", { mode: "number" }).default(0), // 0 = unresolved, 1 = negative, 2 = affirmative

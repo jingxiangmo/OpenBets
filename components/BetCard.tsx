@@ -18,7 +18,6 @@ export default async function BetCard({ bet }: { bet: BetInfoType }) {
         <h2 className="text-xl font-bold text-white">{bet.title}</h2>
       </div>
       <div className="p-6">
-        <p className="mb-4 text-sm text-gray-600">{bet.resolveCondition}</p>
         <div className="mb-4 flex justify-between text-sm">
           <p>
             <span className="font-semibold">Created:</span>{" "}
