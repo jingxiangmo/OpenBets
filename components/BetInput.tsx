@@ -77,7 +77,7 @@ const BetInput: React.FC<BetInputProps> = ({
         </div>
 
         <div className="mb-4 w-1/2 pl-2">
-          <label className="block text-black">Enter Probability (%):</label>
+          <label className="block text-black">Probability (%):</label>
           <input
             type="number"
             value={probability}
