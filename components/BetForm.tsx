@@ -93,17 +93,17 @@ const BetForm = () => {
 
   return (
     <div className="px-8 sm:w-3/4 md:w-2/3 lg:w-1/2">
-      <h2 className="mb-8 text-4xl font-bold">Create a Bet</h2>
+      <h2 className="mb-8 text-4xl font-bold text-gray-800 shadow-text">Create a Bet</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 border-2 border-gray-300">
         <div className="mb-4">
-          <label className="block text-black">Bet Topic:</label>
+          <label className="block text-gray-700 font-bold mb-2">Bet Topic:</label>
           <textarea
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
-            className="mt-1 block h-20 w-full rounded-md border p-2 text-black placeholder-gray-300"
+            className="mt-1 block w-full rounded-md border-2 border-gray-300 p-2 text-black placeholder-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
             placeholder="Will Fraser and Guilia date by the end of 2024?"
-            rows={1}
+            rows={2}
             required
           />
         </div>
@@ -123,42 +123,42 @@ const BetForm = () => {
 
 
         <div className="mb-4 w-2/5">
-            <label className="block text-black">Resolve by:</label>
+            <label className="block text-gray-700 font-bold mb-2">Resolve by:</label>
             <input
               type="date"
               value={resolveBy}
               onChange={(e) => setResolveBy(e.target.value)}
-              className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-100"
+              className="mt-1 block w-full rounded-md border-2 border-gray-300 p-2 text-black placeholder-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               required
-              style={{ color: resolveBy === "" ? "#d3d3d3" : "black" }}
+              style={{ color: resolveBy === "" ? "#a0aec0" : "black" }}
             />
 
             <div className="mt-2 flex justify-between">
               <button
                 type="button"
                 onClick={() => handleDateAddition(1)}
-                className="text-xs text-blue-500 underline"
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
                 1 day
               </button>
               <button
                 type="button"
                 onClick={() => handleDateAddition(7)}
-                className="text-xs text-blue-500 underline"
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
                 7 days
               </button>
               <button
                 type="button"
                 onClick={() => handleDateAddition(90)}
-                className="text-xs text-blue-500 underline"
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
                 90 days
               </button>
             </div>
           </div>
 
-        <h1 className="my-4 text-2xl font-bold">Your Bet</h1>
+        <h1 className="my-4 text-2xl font-bold text-gray-800 shadow-text">Your Bet</h1>
 
         <BetInput
           name=""
@@ -172,14 +172,14 @@ const BetForm = () => {
         />
 
         <div className=" justify-center mb-4">
-          <Button onClick={handleAddParticipant} color="bg-gray-200" className="w-1/2">
+          <Button onClick={handleAddParticipant} color="bg-gray-200" className="w-full">
             + Add Participants
           </Button>
         </div>
 
         {participants.map((participant, index) => (
-          <div key={index} className="mb-4">
-            <h1 className="my-4 text-xl font-bold">Participant {index + 1}</h1>
+          <div key={index} className="mb-4 bg-gray-100 rounded-lg p-4 shadow-sm">
+            <h1 className="my-4 text-xl font-bold text-gray-800 shadow-text">Participant {index + 1}</h1>
 
             <BetInput
               name={participant.name}
