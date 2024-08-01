@@ -54,10 +54,11 @@ const BetForm = () => {
     try {
       const betId = await createBetAndWagerFromForm(
         topic,
-        resolveCondition,
         new Date(resolveBy),
         parseInt(wager),
         selectedButton === "yes",
+        probability as number,
+        participants,
       );
 
       // Reset form fields
