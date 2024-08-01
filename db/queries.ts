@@ -75,7 +75,7 @@ export async function deleteClerkUser(clerkId: string) {
     .where(eq(users.clerkId, clerkId));
 }
 
-export async function createBetAndWager(
+export async function createBetUsersAndWagers(
   userId: number, // creator of the bet also makes the initial wager
   { title, resolveDeadline }: InsertBet,
   { amountUSD, side, odds }: InsertWager,

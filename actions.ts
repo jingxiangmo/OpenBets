@@ -2,7 +2,7 @@
 
 import { currentUser } from "@clerk/nextjs/server";
 
-import { createBetAndWager, resolveBet } from "./db/queries";
+import { createBetUsersAndWagers, resolveBet } from "./db/queries";
 import { bets, wagers } from "./db/schema";
 import { db } from "./db";
 import { desc, eq } from "drizzle-orm";
@@ -81,7 +81,7 @@ export async function createBetAndWagerFromForm(
     }
   }
 
-  return await createBetAndWager(
+  return await createBetUsersAndWagers(
     await dbIdFromClerkId(user),
     {
       title,
