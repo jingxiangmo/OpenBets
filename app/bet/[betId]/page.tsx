@@ -13,14 +13,16 @@ type ClientBetInfo = BetInfoType & {
   pot: number;
 };
 
-export default function ViewBet({ params }: { params: { betId: number } }) {
+export default function ViewBet({ params }: { params: { betId: string } }) {
+  const betId = parseInt(params.betId);
+
   const [bets, setBets] = useState<ClientBetInfo | undefined>(undefined);
   const [resolveChoice, setResolveChoice] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchData() {
       // TODO: actual strategy for non-existent bet
-      const bet = (await getBet(params.betId))!;
+      const bet = (await getBet(betId))!;
 
       const affirmativePot = bet.wagers
         .filter((wager) => wager.side)
@@ -41,7 +43,9 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
     }
 
     fetchData();
-  }, [params.betId]);
+  }, [betId]);
+
+  if (isNaN(betId)) return <div>Invalid bet ID</div>;
 
   if (!bets) {
     return (
@@ -54,11 +58,11 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
   const handleResolve = async () => {
     if (resolveChoice === null) return;
 
-    await updateBetResolutionFromBetPage(params.betId, resolveChoice);
+    await updateBetResolutionFromBetPage(betId, resolveChoice);
   };
 
   const handleUnresolve = async () => {
-    await updateBetResolutionFromBetPage(params.betId, 0);
+    await updateBetResolutionFromBetPage(betId, 0);
 
     setBets((prev) => (prev ? { ...prev, resolveStatus: 0 } : prev));
     setResolveChoice(null);
