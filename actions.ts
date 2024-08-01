@@ -33,6 +33,13 @@ export async function getBet(betId: number) {
   })
 }
 
+export interface Participant {
+  name: string;
+  selectedButton: string | null;
+  wager: string;
+  probability: number | "";
+}
+
 export async function updateBetResolutionFromBetPage(betId: number, resolution: number) {
   const user = await currentUser();
   if (!user) {
@@ -53,7 +60,8 @@ export async function createBetAndWagerFromForm(
 
   amountUSD: number, // in whole USD
   side: boolean,
-  odds?: number, // in whole percent e.g. 60%, NOT 60.5%
+  odds: number, // in whole percent e.g. 60%, NOT 60.5%
+  participants: Participant[],
 ) {
   const user = await currentUser();
   if (!user) {
@@ -92,5 +100,6 @@ export async function createBetAndWagerFromForm(
       side,
       odds,
     },
+    [],
   );
 }

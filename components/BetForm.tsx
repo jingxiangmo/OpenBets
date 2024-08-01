@@ -11,14 +11,7 @@ import {
 import BetInput from './BetInput';
 import Button from './Button';
 
-import { createBetAndWagerFromForm } from "../actions";
-
-interface Participant {
-  name: string;
-  selectedButton: string | null;
-  wager: string;
-  probability: number | "";
-}
+import { Participant, createBetAndWagerFromForm } from "../actions";
 
 const BetForm = () => {
   const { user } = useUser();
@@ -54,6 +47,8 @@ const BetForm = () => {
         new Date(resolveBy),
         parseInt(wager),
         selectedButton === "yes",
+        probability as number,
+        participants,
       );
 
       // Reset form fields
