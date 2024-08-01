@@ -79,6 +79,10 @@ export async function createBetUsersAndWagers(
   userId: number, // creator of the bet also makes the initial wager
   { title, resolveDeadline }: InsertBet,
   { amountUSD, side, odds }: InsertWager,
+  participants: {
+    user: InsertUser,
+    wager: InsertWager,
+  }[],
 ) {
   return await db.transaction(async (tx) => {
     const [{ insertedBetId }] = await tx
@@ -90,13 +94,27 @@ export async function createBetUsersAndWagers(
       })
       .returning({ insertedBetId: bets.id });
 
-    await tx.insert(wagers).values({
+    const participantUserIds = await tx
+      .insert(users)
+      .values(participants.map(({ user }) => user))
+      .returning({ insertedId: users.id });
+
+    const insertedWagers: InsertWager[] = participants.map(({ wager }, ix) => ({
+      ...wager,
+      betId: insertedBetId,
+      userId: participantUserIds[ix].insertedId,
+    }));
+
+    // The bet creator's wager.
+    insertedWagers.push({
       betId: insertedBetId,
       userId: userId,
       amountUSD,
       side,
       odds,
     });
+
+    await tx.insert(wagers).values(insertedWagers);
 
     return insertedBetId;
   });
