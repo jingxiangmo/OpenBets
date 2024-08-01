@@ -32,6 +32,7 @@ const BetForm = () => {
   const [probability, setProbability] = useState<number | "">(""); // Added state for probability
   const [participants, setParticipants] = useState<Participant[]>([{ name: "", selectedButton: null, wager: "", probability: "" }]);
   const [group, setGroup] = useState("");
+  const [showResolveCondition, setShowResolveCondition] = useState(false);
 
   const handleButtonClick = (button: string) => {
     setSelectedButton(button);
@@ -108,55 +109,76 @@ const BetForm = () => {
             required
           />
         </div>
-
-    <div className="flex">
-        <div className="mb-4 w-1/2 pl-2">
-          <label className="block text-gray-700 font-bold mb-2">Resolve by:</label>
-          <input
-            type="date"
-            value={resolveBy}
-            onChange={(e) => setResolveBy(e.target.value)}
-            className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-            required
-            style={{ color: resolveBy === "" ? "#a0aec0" : "black" }}
-          />
-
-          <div className="mt-2 flex justify-between">
-            <button
-              type="button"
-              onClick={() => handleDateAddition(1)}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-            >
-              1 day
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDateAddition(7)}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-            >
-              7 days
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDateAddition(90)}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-            >
-              90 days
-            </button>
-          </div>
-        </div>
-
-        <div className="mb-4 w-1/2 pl-2">
-          <label className="block text-gray-700 font-bold mb-2">Add to group:</label>
-          <select
-            value={group}
-            onChange={(e) => setGroup(e.target.value)}
-            className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+        <div className="mb-4">
+          <div
+            className="mt-2 text-sm text-gray-500 underline cursor-pointer"
+            onClick={() => setShowResolveCondition(!showResolveCondition)}
           >
-            <option value="">Select a group</option>
-            <option value="friends">Friends</option>
-          </select>
+            {showResolveCondition ? "Hide Resolve Condition" : "Add Resolve Condition"}
+          </div>
+          {showResolveCondition && (
+            <div className="mt-4">
+              <label className="block text-gray-700 font-bold mb-2">Resolve Condition (Optional):</label>
+              <textarea
+                value={resolveCondition}
+                onChange={(e) => setResolveCondition(e.target.value)}
+                className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                placeholder="How will the bet be resolved?"
+                rows={2}
+                required
+              />
+            </div>
+          )}
         </div>
+
+        <div className="flex">
+          <div className="mb-4 w-1/2 pl-2">
+            <label className="block text-gray-700 font-bold mb-2">Resolve by:</label>
+            <input
+              type="date"
+              value={resolveBy}
+              onChange={(e) => setResolveBy(e.target.value)}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              required
+              style={{ color: resolveBy === "" ? "#a0aec0" : "black" }}
+            />
+
+            <div className="mt-2 flex justify-between">
+              <button
+                type="button"
+                onClick={() => handleDateAddition(1)}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                1 day
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDateAddition(7)}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                7 days
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDateAddition(90)}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                90 days
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-4 w-1/2 pl-2">
+            <label className="block text-gray-700 font-bold mb-2">Add to group:</label>
+            <select
+              value={group}
+              onChange={(e) => setGroup(e.target.value)}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+            >
+              <option value="">Select a group</option>
+              <option value="friends">Friends</option>
+            </select>
+          </div>
         </div>
 
         <h1 className="my-4 text-xl sm:text-2xl font-bold text-gray-800">Your Bet</h1>
