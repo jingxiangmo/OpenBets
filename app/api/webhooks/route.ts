@@ -1,8 +1,10 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { UserJSON, WebhookEvent } from "@clerk/nextjs/server";
+import { UserJSON, WebhookEvent, clerkClient } from "@clerk/nextjs/server";
 
 import { createUser, deleteClerkUser, updateUser } from "../../../db/queries";
+
+import { ClerkMetadata } from "@/clerkmetadata";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -60,12 +62,23 @@ export async function POST(req: Request) {
       const { first_name, last_name } = evt.data as UserJSON;
       const dbName = `${first_name!} ${last_name!}`;
 
-      const dbFunc = eventType == "user.created" ? createUser : updateUser;
+      if (eventType == "user.created") {
+        const [{ insertedId }] = await createUser({
+          clerkId,
+          name: dbName,
+        });
 
-      const result = await dbFunc({
-        clerkId,
-        name: dbName,
-      });
+        clerkClient().users.updateUserMetadata(clerkId, {
+          privateMetadata: {
+            databaseId: insertedId,
+          } satisfies ClerkMetadata,
+        });
+      } else {
+        await updateUser({
+          clerkId,
+          name: dbName,
+        });
+      }
 
       break;
     }

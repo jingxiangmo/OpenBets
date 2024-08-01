@@ -13,12 +13,13 @@ import { and, asc, desc, eq } from "drizzle-orm";
 
 // resolution: 0 = unresolved, 1 = affirmative, 2 = negative
 // make sure to check this input before calling this function
-export async function resolveBet(clerkId: string, betId: number, resolution: number) {
+export async function resolveBet(userId: number, betId: number, resolution: number) {
+// export async function resolveBet(userId: number, betId: number, resolution: number) {
   return await db.update(bets).set({
     resolved: resolution,
   }).where(and(
     eq(bets.id, betId),
-    eq(bets.createdById, clerkId),
+    eq(bets.createdById, userId),
   ));
 }
 
@@ -26,9 +27,9 @@ export async function resolveBet(clerkId: string, betId: number, resolution: num
 export type BetInfoType = Awaited<ReturnType<typeof getUsersBetsAndWagers>>[number];
 
 // TODO: sort by creation or modified date
-export async function getUsersBetsAndWagers(clerkId: string) {
+export async function getUsersBetsAndWagers(userId: number) {
   return await db.query.bets.findMany({
-    where: eq(bets.createdById, clerkId),
+    where: eq(bets.createdById, userId),
     columns: {
       createdById: false,
     },
@@ -53,7 +54,10 @@ export async function getUsersBetsAndWagers(clerkId: string) {
 }
 
 export async function createUser(user: InsertUser) {
-  return await db.insert(users).values(user);
+  return await db
+    .insert(users)
+    .values(user)
+    .returning({ insertedId: users.id });
 }
 
 export async function updateUser({ name, clerkId }: InsertUser) {
@@ -71,29 +75,46 @@ export async function deleteClerkUser(clerkId: string) {
     .where(eq(users.clerkId, clerkId));
 }
 
-export async function createBetAndWager(
-  clerkId: string, // creator of the bet also makes the initial wager
-  { title, resolveCondition, resolveDeadline }: InsertBet,
+export async function createBetUsersAndWagers(
+  userId: number, // creator of the bet also makes the initial wager
+  { title, resolveDeadline }: InsertBet,
   { amountUSD, side, odds }: InsertWager,
+  participants: {
+    user: InsertUser,
+    wager: InsertWager,
+  }[],
 ) {
   return await db.transaction(async (tx) => {
     const [{ insertedBetId }] = await tx
       .insert(bets)
       .values({
-        createdById: clerkId,
+        createdById: userId,
         title,
-        resolveCondition,
         resolveDeadline,
       })
       .returning({ insertedBetId: bets.id });
 
-    await tx.insert(wagers).values({
+    const participantUserIds = await tx
+      .insert(users)
+      .values(participants.map(({ user }) => user))
+      .returning({ insertedId: users.id });
+
+    const insertedWagers: InsertWager[] = participants.map(({ wager }, ix) => ({
+      ...wager,
       betId: insertedBetId,
-      userId: clerkId,
+      userId: participantUserIds[ix].insertedId,
+    }));
+
+    // The bet creator's wager.
+    insertedWagers.push({
+      betId: insertedBetId,
+      userId: userId,
       amountUSD,
       side,
       odds,
     });
+
+    await tx.insert(wagers).values(insertedWagers);
 
     return insertedBetId;
   });

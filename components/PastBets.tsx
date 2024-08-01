@@ -1,17 +1,18 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import BetCard from "./BetCard";
 import Link from "next/link";
 import Button from "./Button";
 
 import { getUsersBetsAndWagers } from "@/db/queries";
+import { dbIdFromClerkId } from "@/clerkmetadata";
 
 export default async function PastBets() {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+  if (!user) {
     return <div>Unauthorized</div>;
   }
 
-  const bets = await getUsersBetsAndWagers(userId);
+  const bets = await getUsersBetsAndWagers(await dbIdFromClerkId(user));
 
   return (
     <div className="p-8 sm:w-3/4 md:w-2/3 lg:w-1/2">

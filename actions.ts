@@ -1,11 +1,12 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
-import { createBetAndWager, resolveBet } from "./db/queries";
-import { bets, wagers } from "./db/schema";
+import { createBetUsersAndWagers, resolveBet } from "./db/queries";
+import { InsertUser, InsertWager, bets, wagers } from "./db/schema";
 import { db } from "./db";
 import { desc, eq } from "drizzle-orm";
+import { dbIdFromClerkId } from "./clerkmetadata";
 
 export async function getBet(betId: number) {
   return await db.query.bets.findFirst({
@@ -32,9 +33,16 @@ export async function getBet(betId: number) {
   })
 }
 
+export interface Participant {
+  name: string;
+  selectedButton: string | null;
+  wager: string;
+  probability: number | "";
+}
+
 export async function updateBetResolutionFromBetPage(betId: number, resolution: number) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+  if (!user) {
     throw new Error("Unautorized");
   }
 
@@ -43,29 +51,25 @@ export async function updateBetResolutionFromBetPage(betId: number, resolution: 
     throw new Error("Invalid resolution, must be 0, 1, or 2");
   }
 
-  await resolveBet(userId, betId, resolution);
+  await resolveBet(await dbIdFromClerkId(user), betId, resolution);
 }
 
 export async function createBetAndWagerFromForm(
   title: string,
-  resolveCondition: string | undefined,
   resolveDeadline: Date,
 
   amountUSD: number, // in whole USD
   side: boolean,
-  odds?: number, // in whole percent e.g. 60%, NOT 60.5%
+  odds: number, // in whole percent e.g. 60%, NOT 60.5%
+  participants: Participant[],
 ) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+  if (!user) {
     throw new Error("Unautorized");
   }
 
-  if (title.length === 0 || title.length > 1024) {
+  if (title.length === 0 || title.length > 4096) {
     throw new Error("Title must be between 1 and 1024 characters");
-  }
-
-  if (resolveCondition && resolveCondition.length > 8192) {
-    throw new Error("Resolve must be between 1 and 1024 characters");
   }
 
   // check if date is earlier than now
@@ -80,16 +84,56 @@ export async function createBetAndWagerFromForm(
 
   if (odds) {
     odds = Math.round(odds); // odds only in whole percent e.g. 60%, NOT 60.5%
-    if (odds <= 1 || odds >= 99) {
+    if (odds < 0 || odds > 100) {
       throw new Error("Odds must be between 1 and 99");
     }
   }
 
-  return await createBetAndWager(
-    userId,
+  const dbParticipants = participants.map(({ name, selectedButton, wager, probability }, ix) => {
+    const prefix = `Participant ${ix}`;
+
+    if (name.length === 0 || name.length > 4096) {
+      throw new Error(`${prefix} name must be between 1 and 1024 characters`);
+    }
+
+    const partWager = parseInt(wager);
+    if (partWager <= 0) {
+      throw new Error(`${prefix} wager must be greater than 0`);
+    }
+
+    if (selectedButton !== "yes" && selectedButton !== "no") {
+      throw new Error(`${prefix} must be either "yes" or "no"`);
+    }
+    const partSide = selectedButton === "yes";
+
+    const partProb = probability as number;
+    if (partProb <= 0 || partProb > 100) {
+      throw new Error(`${prefix} probability must be between 0 and 100`);
+    }
+
+    if (probability) {
+      probability = Math.round(probability); // odds only in whole percent e.g. 60%, NOT 60.5%
+      if (probability < 0 || probability > 100) {
+        throw new Error(`${prefix} probability must be between 1 and 99`);
+      }
+    }
+
+    return {
+      user: {
+        name,
+      } satisfies InsertUser,
+      wager: {
+        amountUSD: partWager,
+        side: partSide,
+        odds: partProb,
+      } satisfies InsertWager,
+    }
+  });
+
+  return await createBetUsersAndWagers(
+    await dbIdFromClerkId(user),
     {
       title,
-      resolveCondition,
       resolveDeadline,
     },
     {
@@ -97,5 +141,6 @@ export async function createBetAndWagerFromForm(
       side,
       odds,
     },
+    dbParticipants,
   );
 }

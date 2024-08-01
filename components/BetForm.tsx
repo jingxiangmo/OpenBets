@@ -11,20 +11,12 @@ import {
 import BetInput from './BetInput';
 import Button from './Button';
 
-import { createBetAndWagerFromForm } from "../actions";
-
-interface Participant {
-  name: string;
-  selectedButton: string | null;
-  wager: string;
-  probability: number | "";
-}
+import { Participant, createBetAndWagerFromForm } from "../actions";
 
 const BetForm = () => {
   const { user } = useUser();
   const { session } = useSession();
   const [topic, setTopic] = useState("");
-  const [resolveCondition, setResolveCondition] = useState("");
   const [resolveBy, setResolveBy] = useState("");
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [wager, setWager] = useState("");
@@ -52,15 +44,15 @@ const BetForm = () => {
     try {
       const betId = await createBetAndWagerFromForm(
         topic,
-        resolveCondition,
         new Date(resolveBy),
         parseInt(wager),
         selectedButton === "yes",
+        probability as number,
+        participants,
       );
 
       // Reset form fields
       setTopic("");
-      setResolveCondition("");
       setResolveBy("");
       setSelectedButton(null);
       setWager("");

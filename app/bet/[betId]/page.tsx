@@ -76,7 +76,6 @@ export default function ViewBet({ params }: { params: { betId: number } }) {
         <div className="overflow-hidden rounded-lg bg-white shadow-xl">
           <div className={`p-6 ${getResolveStatusColor()}`}>
             <h1 className="mb-2 text-3xl font-bold text-white">{bets.title}</h1>
-            <p className="text-xl text-white">{bets.resolveCondition}</p>
             {bets.resolved !== 0 && (
               <p className="mt-4 text-2xl font-bold text-white">
                 Resolved: {bets.resolved === 2 ? "Yes" : "No"}
