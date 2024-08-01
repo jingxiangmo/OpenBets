@@ -30,7 +30,7 @@ const BetForm = () => {
   const [wager, setWager] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [probability, setProbability] = useState<number | "">(""); // Added state for probability
-  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [participants, setParticipants] = useState<Participant[]>([{ name: "", selectedButton: null, wager: "", probability: "" }]);
   const [group, setGroup] = useState("");
 
   const handleButtonClick = (button: string) => {
@@ -172,12 +172,6 @@ const BetForm = () => {
           onProbabilityChange={setProbability}
         />
 
-        <div className="justify-center mb-4">
-          <Button onClick={handleAddParticipant} color="bg-gray-200" className="w-full">
-            + Add Participants
-          </Button>
-        </div>
-
         {participants.map((participant, index) => (
           <div key={index} className="mb-4 bg-gray-50 rounded-lg p-3 sm:p-4">
             <h1 className="my-3 text-lg sm:text-xl font-bold text-gray-800">Participant {index + 1}</h1>
@@ -196,22 +190,28 @@ const BetForm = () => {
           </div>
         ))}
 
-        <SignedIn>
-          <button type="submit" className="mx-auto my-4 h-12 w-full bg-gray-700 text-[#1e3050] m-2 p-0 rounded-md border-none">
-            <span className="block p-2.5 rounded-md border-none bg-yellow-300 transition-transform ease-linear -translate-y-1.5 duration-40 transform shadow hover:-translate-y-2 active:translate-y-0">
-              🤝 Open Bet
-            </span>
-          </button>
-        </SignedIn>
-
-        <SignedOut>
-          <SignUpButton>
-            <Button className="mx-auto my-4 h-12 w-full">
-              🤝 Signup to Bet
-            </Button>
-          </SignUpButton>
-        </SignedOut>
+        <div className="justify-center mb-4">
+          <Button onClick={handleAddParticipant} color="bg-gray-200" className="w-full">
+            + Add Participants
+          </Button>
+        </div>
       </form>
+
+      <SignedIn>
+        <button type="submit" className="mx-auto my-4 h-12 w-full bg-gray-700 text-[#1e3050] m-2 p-0 rounded-md border-none">
+          <span className="block p-2.5 rounded-md border-none bg-yellow-300 transition-transform ease-linear -translate-y-1.5 duration-40 transform shadow hover:-translate-y-2 active:translate-y-0">
+            🤝 Open Bet
+          </span>
+        </button>
+      </SignedIn>
+
+      <SignedOut>
+        <SignUpButton>
+          <Button className="mx-auto my-4 h-12 w-full">
+            🤝 Signup to Bet
+          </Button>
+        </SignUpButton>
+      </SignedOut>
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
