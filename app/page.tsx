@@ -12,12 +12,10 @@ import LandingPage from "@/components/LandingPage";
 export default async function Index() {
   return (
     <>
-      <SignedOut>
-        <LandingPage />
-      </SignedOut>
-      
+
+<BetForm />
+
       <SignedIn>
-        <BetForm />
         <PastBets />
       </SignedIn>
     </>

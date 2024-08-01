@@ -11,18 +11,27 @@ import {
 import BetInput from './BetInput';
 import Button from './Button';
 
-import { Participant, createBetAndWagerFromForm } from "../actions";
+import { createBetAndWagerFromForm } from "../actions";
+
+interface Participant {
+  name: string;
+  selectedButton: string | null;
+  wager: string;
+  probability: number | "";
+}
 
 const BetForm = () => {
   const { user } = useUser();
   const { session } = useSession();
   const [topic, setTopic] = useState("");
+  const [resolveCondition, setResolveCondition] = useState("");
   const [resolveBy, setResolveBy] = useState("");
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [wager, setWager] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [probability, setProbability] = useState<number | "">(""); // Added state for probability
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const [group, setGroup] = useState("");
 
   const handleButtonClick = (button: string) => {
     setSelectedButton(button);
@@ -44,15 +53,15 @@ const BetForm = () => {
     try {
       const betId = await createBetAndWagerFromForm(
         topic,
+        resolveCondition,
         new Date(resolveBy),
         parseInt(wager),
         selectedButton === "yes",
-        probability as number,
-        participants,
       );
 
       // Reset form fields
       setTopic("");
+      setResolveCondition("");
       setResolveBy("");
       setSelectedButton(null);
       setWager("");
@@ -100,7 +109,8 @@ const BetForm = () => {
           />
         </div>
 
-        <div className="mb-4 w-full sm:w-2/5">
+    <div className="flex">
+        <div className="mb-4 w-1/2 pl-2">
           <label className="block text-gray-700 font-bold mb-2">Resolve by:</label>
           <input
             type="date"
@@ -136,6 +146,19 @@ const BetForm = () => {
           </div>
         </div>
 
+        <div className="mb-4 w-1/2 pl-2">
+          <label className="block text-gray-700 font-bold mb-2">Add to group:</label>
+          <select
+            value={group}
+            onChange={(e) => setGroup(e.target.value)}
+            className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          >
+            <option value="">Select a group</option>
+            <option value="friends">Friends</option>
+          </select>
+        </div>
+        </div>
+
         <h1 className="my-4 text-xl sm:text-2xl font-bold text-gray-800">Your Bet</h1>
 
         <BetInput
@@ -143,7 +166,7 @@ const BetForm = () => {
           selectedButton={selectedButton}
           wager={wager}
           probability={probability}
-          onNameChange={() => {}} // Not used for main user
+          onNameChange={() => {}} 
           onButtonClick={handleButtonClick}
           onWagerChange={setWager}
           onProbabilityChange={setProbability}
@@ -174,9 +197,11 @@ const BetForm = () => {
         ))}
 
         <SignedIn>
-          <Button type="submit" className="mx-auto my-4 h-12 w-full">
-            🤝 Open Bet
-          </Button>
+          <button type="submit" className="mx-auto my-4 h-12 w-full bg-gray-700 text-[#1e3050] m-2 p-0 rounded-md border-none">
+            <span className="block p-2.5 rounded-md border-none bg-yellow-300 transition-transform ease-linear -translate-y-1.5 duration-40 transform shadow hover:-translate-y-2 active:translate-y-0">
+              🤝 Open Bet
+            </span>
+          </button>
         </SignedIn>
 
         <SignedOut>
