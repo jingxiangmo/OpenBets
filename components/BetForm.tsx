@@ -57,6 +57,7 @@ const BetForm = () => {
       setSelectedButton(null);
       setWager("");
       setProbability(""); // Reset probability
+      setParticipants([]);
       // Show modal
       setShowModal(true);
       // Refresh the page after a short delay
