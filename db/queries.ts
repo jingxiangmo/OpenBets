@@ -14,7 +14,6 @@ import { and, asc, desc, eq } from "drizzle-orm";
 // resolution: 0 = unresolved, 1 = affirmative, 2 = negative
 // make sure to check this input before calling this function
 export async function resolveBet(userId: number, betId: number, resolution: number) {
-// export async function resolveBet(userId: number, betId: number, resolution: number) {
   return await db.update(bets).set({
     resolved: resolution,
   }).where(and(
