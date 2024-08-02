@@ -12,17 +12,28 @@ import Button from './Button';
 
 import { Participant, createBetAndWagerFromForm } from "../actions";
 
+import { useAtom } from "jotai";
+
+import {
+  topicAtom,
+  resolveByAtom,
+  selectedButtonAtom,
+  wagerAtom,
+  probabilityAtom,
+  participantsAtom,
+} from "@/atoms";
+
 const BetForm = () => {
   const { session } = useSession();
 
   const [showModal, setShowModal] = useState(false);
 
-  const [topic, setTopic] = useState("");
-  const [resolveBy, setResolveBy] = useState("");
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
-  const [wager, setWager] = useState("");
-  const [probability, setProbability] = useState<number | "">(""); // Added state for probability
-  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [topic, setTopic] = useAtom(topicAtom);
+  const [resolveBy, setResolveBy] = useAtom(resolveByAtom);
+  const [selectedButton, setSelectedButton] = useAtom(selectedButtonAtom);
+  const [wager, setWager] = useAtom(wagerAtom);
+  const [probability, setProbability] = useAtom(probabilityAtom); // Added state for probability
+  const [participants, setParticipants] = useAtom(participantsAtom);
 
   const handleButtonClick = (button: string) => {
     setSelectedButton(button);
