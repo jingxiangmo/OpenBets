@@ -94,16 +94,20 @@ export async function createBetUsersAndWagers(
       })
       .returning({ insertedBetId: bets.id });
 
-    const participantUserIds = await tx
-      .insert(users)
-      .values(participants.map(({ user }) => user))
-      .returning({ insertedId: users.id });
+    let insertedWagers: InsertWager[] = [];
 
-    const insertedWagers: InsertWager[] = participants.map(({ wager }, ix) => ({
-      ...wager,
-      betId: insertedBetId,
-      userId: participantUserIds[ix].insertedId,
-    }));
+    if (participants.length > 0) {
+      const participantUserIds = await tx
+        .insert(users)
+        .values(participants.map(({ user }) => user))
+        .returning({ insertedId: users.id });
+
+      insertedWagers = participants.map(({ wager }, ix) => ({
+        ...wager,
+        betId: insertedBetId,
+        userId: participantUserIds[ix].insertedId,
+      }));
+    }
 
     // The bet creator's wager.
     insertedWagers.push({
