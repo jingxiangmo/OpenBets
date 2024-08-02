@@ -19,6 +19,7 @@
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.32.1",
     "geist": "^1.2.1",
+    "jotai": "^2.9.1",
     "mui": "^0.0.1",
     "next": "latest",
     "postcss": "8.4.33",

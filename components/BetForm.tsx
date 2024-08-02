@@ -1,28 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import { useSession, useUser } from "@clerk/nextjs";
+import { useSession } from "@clerk/nextjs";
 import {
   SignUpButton,
   SignedIn,
   SignedOut,
-  SignOutButton,
 } from "@clerk/nextjs";
 import BetInput from './BetInput';
 import Button from './Button';
 
 import { Participant, createBetAndWagerFromForm } from "../actions";
 
+import { useAtom } from "jotai";
+
+import {
+  topicAtom,
+  resolveByAtom,
+  selectedButtonAtom,
+  wagerAtom,
+  probabilityAtom,
+  participantsAtom,
+} from "@/atoms";
+
 const BetForm = () => {
-  const { user } = useUser();
   const { session } = useSession();
-  const [topic, setTopic] = useState("");
-  const [resolveBy, setResolveBy] = useState("");
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
-  const [wager, setWager] = useState("");
+
   const [showModal, setShowModal] = useState(false);
-  const [probability, setProbability] = useState<number | "">(""); // Added state for probability
-  const [participants, setParticipants] = useState<Participant[]>([]);
+
+  const [topic, setTopic] = useAtom(topicAtom);
+  const [resolveBy, setResolveBy] = useAtom(resolveByAtom);
+  const [selectedButton, setSelectedButton] = useAtom(selectedButtonAtom);
+  const [wager, setWager] = useAtom(wagerAtom);
+  const [probability, setProbability] = useAtom(probabilityAtom); // Added state for probability
+  const [participants, setParticipants] = useAtom(participantsAtom);
 
   const handleButtonClick = (button: string) => {
     setSelectedButton(button);
@@ -57,6 +68,7 @@ const BetForm = () => {
       setSelectedButton(null);
       setWager("");
       setProbability(""); // Reset probability
+      setParticipants([]);
       // Show modal
       setShowModal(true);
       // Refresh the page after a short delay
