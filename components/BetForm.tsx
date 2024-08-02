@@ -14,11 +14,13 @@ import { Participant, createBetAndWagerFromForm } from "../actions";
 
 const BetForm = () => {
   const { session } = useSession();
+
+  const [showModal, setShowModal] = useState(false);
+
   const [topic, setTopic] = useState("");
   const [resolveBy, setResolveBy] = useState("");
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [wager, setWager] = useState("");
-  const [showModal, setShowModal] = useState(false);
   const [probability, setProbability] = useState<number | "">(""); // Added state for probability
   const [participants, setParticipants] = useState<Participant[]>([]);
 
