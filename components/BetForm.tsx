@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useSession, useUser } from "@clerk/nextjs";
+import { useSession } from "@clerk/nextjs";
 import {
   SignUpButton,
   SignedIn,
   SignedOut,
-  SignOutButton,
 } from "@clerk/nextjs";
 import BetInput from './BetInput';
 import Button from './Button';
@@ -14,7 +13,6 @@ import Button from './Button';
 import { Participant, createBetAndWagerFromForm } from "../actions";
 
 const BetForm = () => {
-  const { user } = useUser();
   const { session } = useSession();
   const [topic, setTopic] = useState("");
   const [resolveBy, setResolveBy] = useState("");
