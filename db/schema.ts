@@ -1,10 +1,10 @@
-import { relations, sql } from 'drizzle-orm';
+import { relations, sql } from "drizzle-orm";
 import {
   primaryKey,
   integer,
   sqliteTable,
   text,
-} from 'drizzle-orm/sqlite-core';
+} from "drizzle-orm/sqlite-core";
 
 const id = (name: string) => integer(name).primaryKey({ autoIncrement: true });
 const requiredName = (name: string) => text(name).notNull();
@@ -25,16 +25,15 @@ const userCascadeReference = (name: string) =>
   integer(name).references(() => users.id, {
     onDelete: "cascade",
   });
-const betReference = (name: string) =>
-  integer(name).references(() => bets.id);
+const betReference = (name: string) => integer(name).references(() => bets.id);
 const betCascadeReference = (name: string) =>
   integer(name).references(() => bets.id, {
     onDelete: "cascade",
   });
 
-export const users = sqliteTable('users', {
+export const users = sqliteTable("users", {
   id: id("id"),
-  clerkId: text('clerk_id').unique(),
+  clerkId: text("clerk_id").unique(),
   name: requiredName("name"),
 });
 
@@ -89,7 +88,6 @@ export const wagerRelations = relations(wagers, ({ one }) => ({
     references: [users.id],
   }),
 }));
-
 
 export type InsertUser = typeof users.$inferInsert;
 export type SelectUser = typeof users.$inferSelect;
