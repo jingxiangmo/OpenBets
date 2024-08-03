@@ -30,7 +30,7 @@ export default function AfterSignInRedirectPage() {
 
   useEffect(() => {
     // Set the timeout for 5 seconds (5000 milliseconds)
-    const timer = setTimeout(async () => {
+    async function submitthing() {
       if (isSignedIn) {
         const betId = await createBetAndWagerFromForm(
           topic,
@@ -49,12 +49,17 @@ export default function AfterSignInRedirectPage() {
         setProbability(""); // Reset probability
         setParticipants([]);
       }
+    }
 
-      // Redirect to the target page
-      router.push("/");
-    }, 5000);
+    let timer: NodeJS.Timeout;
 
-    // Clean up the timer when the component is unmounted
+    submitthing().then(() => {
+      timer = setTimeout(async () => {
+        // Redirect to the target page
+        router.push("/");
+      }, 2500);
+    });
+
     return () => clearTimeout(timer);
   }, [
     router,
