@@ -9,6 +9,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "1.4.2",
     "@clerk/nextjs": "^5.2.12",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
