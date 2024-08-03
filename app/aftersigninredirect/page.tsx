@@ -61,12 +61,19 @@ export default function AfterSignInRedirectPage() {
 
     isSignedIn,
 
-    topicAtom,
-    resolveByAtom,
-    selectedButtonAtom,
-    wagerAtom,
-    probabilityAtom,
-    participantsAtom,
+    topic,
+    resolveBy,
+    selectedButton,
+    wager,
+    probability,
+    participants,
+
+    setTopic,
+    setResolveBy,
+    setSelectedButton,
+    setWager,
+    setProbability,
+    setParticipants,
   ]);
 
   return (
