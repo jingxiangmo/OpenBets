@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import { useSession } from "@clerk/nextjs";
 
@@ -14,7 +14,7 @@ import {
   probabilityAtom,
   participantsAtom,
 } from "@/atoms";
-import { createBetAndWagerFromForm } from '@/actions';
+import { createBetAndWagerFromForm } from "@/actions";
 
 export default function AfterSignInRedirectPage() {
   const router = useRouter();
@@ -87,4 +87,4 @@ export default function AfterSignInRedirectPage() {
       <p>You will be redirected to the bet page in a few seconds.</p>
     </div>
   );
-};
+}
