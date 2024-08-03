@@ -1,4 +1,4 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import BetCard from "./BetCard";
 import Link from "next/link";
 import Button from "./Button";
