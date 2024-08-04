@@ -1,32 +1,33 @@
-import React from 'react';
+import React from "react";
 
-interface ButtonProps {
-  onClick?: () => void;
-  children: React.ReactNode;
-  isPressed?: boolean;
-  className?: string;
-  color?: string;
-  type?: "submit" | "reset" | "button"
-}
+import { ClassNameValue, twMerge } from "tailwind-merge";
 
-const Button: React.FC<ButtonProps> = ({ type, onClick, children, isPressed = false, className = '', color = 'bg-yellow-300' }) => {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  color?: ClassNameValue;
+};
+
+export default function Button({
+  color = "bg-yellow-300",
+  children,
+  className,
+  ...props
+}: ButtonProps) {
   return (
     <button
-      type={type}
-      onClick={onClick}
-      className={`m-2 p-0 rounded-md border-none bg-gray-700 text-[#1e3050] ${className}`}
-      data-pressed={isPressed}
+      {...props}
+      className={twMerge(
+        "m-2 rounded-md border-none bg-gray-700 p-0 text-[#1e3050]",
+        className,
+      )}
     >
       <span
-        className={`block p-2.5 rounded-md border-none ${color} transition-transform ease-linear -translate-y-1.5 duration-40 transform shadow ${
-          isPressed ? 'translate-y-0' : 'hover:-translate-y-2 active:translate-y-0'
-        }`}
+        className={twMerge(
+          `duration-40 block -translate-y-1.5 transform rounded-md border-none p-2.5 shadow transition-transform ease-linear hover:-translate-y-2 active:translate-y-0`,
+          color,
+        )}
       >
-
         {children}
       </span>
     </button>
   );
-};
-
-export default Button;
+}
