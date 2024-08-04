@@ -3,6 +3,8 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import Link from "next/link";
 
+import AuthButton from "@/components/AuthButton";
+
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
@@ -13,7 +15,7 @@ export const metadata = {
   description: "The fastest way to settle a disagreement.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -28,9 +30,8 @@ export default function RootLayout({
                 <Link href="/" className="text-xl">
                   WeShallSee.xyz
                 </Link>
-                <div>
-                  TODO: sign in/out
-                </div>
+                {/* TODO: actually make these work */}
+                <div><AuthButton /></div>
               </div>
             </nav>
             {children}
