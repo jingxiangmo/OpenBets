@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import BetInput from './BetInput';
-import Button from './Button';
+import BetInput from "./BetInput";
+import Button from "./Button";
 
 import { createBetAndWagerFromForm } from "../actions";
 
@@ -17,7 +17,14 @@ import {
   participantsAtom,
 } from "@/atoms";
 
-const BetForm = () => {
+import { SessionProvider, useSession } from "next-auth/react";
+
+export default function BetForm() {
+  return <SessionProvider><BetFormInside /></SessionProvider>;
+}
+
+function BetFormInside() {
+  const session = useSession();
   const [showModal, setShowModal] = useState(false);
 
   const [topic, setTopic] = useAtom(topicAtom);
@@ -39,10 +46,10 @@ const BetForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // if (!session) {
-    //   console.error("Session is not available");
-    //   return;
-    // }
+    if (!session) {
+      console.error("Session is not available");
+      return;
+    }
 
     try {
       const betId = await createBetAndWagerFromForm(
@@ -73,27 +80,41 @@ const BetForm = () => {
   };
 
   const handleAddParticipant = () => {
-    setParticipants([...participants, { name: "", selectedButton: null, wager: "", probability: "" }]);
+    setParticipants([
+      ...participants,
+      { name: "", selectedButton: null, wager: "", probability: "" },
+    ]);
   };
 
-  const handleParticipantChange = (index: number, field: string, value: string | null) => {
+  const handleParticipantChange = (
+    index: number,
+    field: string,
+    value: string | null,
+  ) => {
     setParticipants(
       participants.map((participant, i) => {
         if (i === index) {
           return { ...participant, [field]: value };
         }
         return participant;
-      })
+      }),
     );
   };
 
   return (
-    <div className="px-4 sm:px-8 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 mx-auto">
-      <h2 className="mb-6 text-3xl sm:text-4xl font-bold text-gray-800">Create a Bet</h2>
+    <div className="mx-auto w-full px-4 sm:w-3/4 sm:px-8 md:w-2/3 lg:w-1/2">
+      <h2 className="mb-6 text-3xl font-bold text-gray-800 sm:text-4xl">
+        Create a Bet
+      </h2>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg p-4 sm:p-6 border border-gray-300">
+      <form
+        onSubmit={handleSubmit}
+        className="rounded-lg border border-gray-300 bg-white p-4 sm:p-6"
+      >
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Bet Topic:</label>
+          <label className="mb-2 block font-bold text-gray-700">
+            Bet Topic:
+          </label>
           <textarea
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
@@ -105,7 +126,9 @@ const BetForm = () => {
         </div>
 
         <div className="mb-4 w-full sm:w-2/5">
-          <label className="block text-gray-700 font-bold mb-2">Resolve by:</label>
+          <label className="mb-2 block font-bold text-gray-700">
+            Resolve by:
+          </label>
           <input
             type="date"
             value={resolveBy}
@@ -119,28 +142,30 @@ const BetForm = () => {
             <button
               type="button"
               onClick={() => handleDateAddition(1)}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              className="text-sm font-medium text-blue-600 hover:text-blue-800"
             >
               1 day
             </button>
             <button
               type="button"
               onClick={() => handleDateAddition(7)}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              className="text-sm font-medium text-blue-600 hover:text-blue-800"
             >
               7 days
             </button>
             <button
               type="button"
               onClick={() => handleDateAddition(90)}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              className="text-sm font-medium text-blue-600 hover:text-blue-800"
             >
               90 days
             </button>
           </div>
         </div>
 
-        <h1 className="my-4 text-xl sm:text-2xl font-bold text-gray-800">Your Bet</h1>
+        <h1 className="my-4 text-xl font-bold text-gray-800 sm:text-2xl">
+          Your Bet
+        </h1>
 
         <BetInput
           name=""
@@ -153,43 +178,57 @@ const BetForm = () => {
           onProbabilityChange={setProbability}
         />
 
-        <div className="justify-center mb-4">
-          <Button onClick={handleAddParticipant} color="bg-gray-200" className="w-full">
+        <div className="mb-4 justify-center">
+          <Button
+            onClick={handleAddParticipant}
+            color="bg-gray-200"
+            className="w-full"
+          >
             + Add Participants
           </Button>
         </div>
 
         {participants.map((participant, index) => (
-          <div key={index} className="mb-4 bg-gray-50 rounded-lg p-3 sm:p-4">
-            <h1 className="my-3 text-lg sm:text-xl font-bold text-gray-800">Participant {index + 1}</h1>
+          <div key={index} className="mb-4 rounded-lg bg-gray-50 p-3 sm:p-4">
+            <h1 className="my-3 text-lg font-bold text-gray-800 sm:text-xl">
+              Participant {index + 1}
+            </h1>
 
             <BetInput
               name={participant.name}
               selectedButton={participant.selectedButton}
               wager={participant.wager}
               probability={participant.probability}
-              onNameChange={(value) => handleParticipantChange(index, "name", value)}
-              onButtonClick={(button) => handleParticipantChange(index, "selectedButton", button)}
-              onWagerChange={(value) => handleParticipantChange(index, "wager", value)}
-              onProbabilityChange={(value) => handleParticipantChange(index, "probability", value?.toString() ?? null)}
+              onNameChange={(value) =>
+                handleParticipantChange(index, "name", value)
+              }
+              onButtonClick={(button) =>
+                handleParticipantChange(index, "selectedButton", button)
+              }
+              onWagerChange={(value) =>
+                handleParticipantChange(index, "wager", value)
+              }
+              onProbabilityChange={(value) =>
+                handleParticipantChange(
+                  index,
+                  "probability",
+                  value?.toString() ?? null,
+                )
+              }
               showName={true}
             />
           </div>
         ))}
 
-        {/* <SignedIn> */}
-        {/*   <Button type="submit" className="mx-auto my-4 h-12 w-full"> */}
-        {/*     🤝 Open Bet */}
-        {/*   </Button> */}
-        {/* </SignedIn> */}
-
-        {/* <SignedOut> */}
-        {/*   <SignUpButton> */}
-        {/*     <Button className="mx-auto my-4 h-12 w-full"> */}
-        {/*       🤝 Signup to Bet */}
-        {/*     </Button> */}
-        {/*   </SignUpButton> */}
-        {/* </SignedOut> */}
+        {session ? (
+          <Button type="submit" className="mx-auto my-4 h-12 w-full">
+            🤝 Open Bet
+          </Button>
+        ) : (
+          <Button className="mx-auto my-4 h-12 w-full">
+            🤝 Signup to Bet
+          </Button>
+        )}
       </form>
 
       {showModal && (
@@ -237,5 +276,3 @@ const BetForm = () => {
     </div>
   );
 };
-
-export default BetForm;
