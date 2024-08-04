@@ -1,12 +1,9 @@
 "use server";
 
-import { currentUser } from "@clerk/nextjs/server";
-
 import { createBetUsersAndWagers, resolveBet } from "./db/queries";
 import { InsertUser, InsertWager, bets, wagers } from "./db/schema";
 import { db } from "./db";
 import { desc, eq } from "drizzle-orm";
-import { dbIdFromClerkId } from "./clerkmetadata";
 
 export async function getBet(betId: number) {
   return await db.query.bets.findFirst({
@@ -24,7 +21,7 @@ export async function getBet(betId: number) {
         with: {
           user: {
             columns: {
-              clerkId: false,
+              id: false,
             },
           },
         },
@@ -41,17 +38,17 @@ export interface Participant {
 }
 
 export async function updateBetResolutionFromBetPage(betId: number, resolution: number) {
-  const user = await currentUser();
-  if (!user) {
-    throw new Error("Unautorized");
-  }
+  // const user = await currentUser();
+  // if (!user) {
+  //   throw new Error("Unautorized");
+  // }
 
   // TODO: remove once db enforces this with check constraint
   if (resolution !== 0 && resolution !== 1 && resolution !== 2) {
     throw new Error("Invalid resolution, must be 0, 1, or 2");
   }
 
-  await resolveBet(await dbIdFromClerkId(user), betId, resolution);
+  // await resolveBet(await dbIdFromClerkId(user), betId, resolution);
 }
 
 export async function createBetAndWagerFromForm(
@@ -131,7 +128,8 @@ export async function createBetAndWagerFromForm(
   });
 
   return await createBetUsersAndWagers(
-    await dbIdFromClerkId(user),
+    // await dbIdFromClerkId(user),
+    6969,
     {
       title,
       resolveDeadline,

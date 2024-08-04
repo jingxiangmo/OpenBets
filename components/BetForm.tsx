@@ -1,12 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "@clerk/nextjs";
-import {
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-} from "@clerk/nextjs";
 import BetInput from './BetInput';
 import Button from './Button';
 
@@ -24,8 +18,6 @@ import {
 } from "@/atoms";
 
 const BetForm = () => {
-  const { session } = useSession();
-
   const [showModal, setShowModal] = useState(false);
 
   const [topic, setTopic] = useAtom(topicAtom);
@@ -47,10 +39,10 @@ const BetForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!session) {
-      console.error("Session is not available");
-      return;
-    }
+    // if (!session) {
+    //   console.error("Session is not available");
+    //   return;
+    // }
 
     try {
       const betId = await createBetAndWagerFromForm(
@@ -185,19 +177,19 @@ const BetForm = () => {
           </div>
         ))}
 
-        <SignedIn>
-          <Button type="submit" className="mx-auto my-4 h-12 w-full">
-            🤝 Open Bet
-          </Button>
-        </SignedIn>
+        {/* <SignedIn> */}
+        {/*   <Button type="submit" className="mx-auto my-4 h-12 w-full"> */}
+        {/*     🤝 Open Bet */}
+        {/*   </Button> */}
+        {/* </SignedIn> */}
 
-        <SignedOut>
-          <SignUpButton>
-            <Button className="mx-auto my-4 h-12 w-full">
-              🤝 Signup to Bet
-            </Button>
-          </SignUpButton>
-        </SignedOut>
+        {/* <SignedOut> */}
+        {/*   <SignUpButton> */}
+        {/*     <Button className="mx-auto my-4 h-12 w-full"> */}
+        {/*       🤝 Signup to Bet */}
+        {/*     </Button> */}
+        {/*   </SignUpButton> */}
+        {/* </SignedOut> */}
       </form>
 
       {showModal && (
