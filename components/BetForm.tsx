@@ -4,7 +4,7 @@ import { useState } from "react";
 import BetInput from './BetInput';
 import Button from './Button';
 
-import { Participant, createBetAndWagerFromForm } from "../actions";
+import { createBetAndWagerFromForm } from "../actions";
 
 import { useAtom } from "jotai";
 
