@@ -59,21 +59,6 @@ export async function createUser(user: InsertUser) {
     .returning({ insertedId: users.id });
 }
 
-export async function updateUser({ name, clerkId }: InsertUser) {
-  return await db
-    .update(users)
-    .set({
-      name,
-    })
-    .where(eq(users.clerkId, clerkId!));
-}
-
-export async function deleteClerkUser(clerkId: string) {
-  return await db
-    .delete(users)
-    .where(eq(users.clerkId, clerkId));
-}
-
 export async function createBetUsersAndWagers(
   userId: number, // creator of the bet also makes the initial wager
   { title, resolveDeadline }: InsertBet,
