@@ -30,20 +30,28 @@ export async function getUsersBetsAndWagers(userId: string) {
   return await db.query.bets.findMany({
     where: eq(bets.createdById, userId),
     columns: {
-      createdById: false,
+      createdAt: true,
+      id: true,
+      resolveDeadline: true,
+      resolved: true,
+      title: true,
+      updatedAt: true,
     },
     orderBy: [asc(bets.resolveDeadline)],
     with: {
       wagers: {
         columns: {
-          betId: false,
-          userId: false,
+          amountUSD: true,
+          createdAt: true,
+          odds: true,
+          side: true,
+          updatedAt: true,
         },
         orderBy: [desc(wagers.createdAt)],
         with: {
           user: {
             columns: {
-              id: false,
+              name: true,
             },
           },
         },

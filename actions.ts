@@ -14,14 +14,17 @@ export async function getBet(betId: number) {
     with: {
       wagers: {
         columns: {
-          betId: false,
-          userId: false,
+          amountUSD: true,
+          createdAt: true,
+          odds: true,
+          side: true,
+          updatedAt: true,
         },
         orderBy: [desc(wagers.createdAt)],
         with: {
           user: {
             columns: {
-              id: false,
+              name: true,
             },
           },
         },
