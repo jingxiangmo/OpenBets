@@ -13,7 +13,7 @@ import { and, asc, desc, eq } from "drizzle-orm";
 
 // resolution: 0 = unresolved, 1 = affirmative, 2 = negative
 // make sure to check this input before calling this function
-export async function resolveBet(userId: number, betId: number, resolution: number) {
+export async function resolveBet(userId: string, betId: number, resolution: number) {
   return await db.update(bets).set({
     resolved: resolution,
   }).where(and(
@@ -26,7 +26,7 @@ export async function resolveBet(userId: number, betId: number, resolution: numb
 export type BetInfoType = Awaited<ReturnType<typeof getUsersBetsAndWagers>>[number];
 
 // TODO: sort by creation or modified date
-export async function getUsersBetsAndWagers(userId: number) {
+export async function getUsersBetsAndWagers(userId: string) {
   return await db.query.bets.findMany({
     where: eq(bets.createdById, userId),
     columns: {
@@ -43,7 +43,7 @@ export async function getUsersBetsAndWagers(userId: number) {
         with: {
           user: {
             columns: {
-              clerkId: false,
+              id: false,
             },
           },
         },
@@ -60,7 +60,7 @@ export async function createUser(user: InsertUser) {
 }
 
 export async function createBetUsersAndWagers(
-  userId: number, // creator of the bet also makes the initial wager
+  userId: string, // creator of the bet also makes the initial wager
   { title, resolveDeadline }: InsertBet,
   { amountUSD, side, odds }: InsertWager,
   participants: {
