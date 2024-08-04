@@ -1,9 +1,9 @@
-import { NextAuthOptions, getServerSession } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
+import { NextAuthOptions, getServerSession } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 
-import type { Adapter } from "next-auth/adapters"
-import { DrizzleAdapter } from "@auth/drizzle-adapter"
-import { db } from "@/db"
+import type { Adapter } from "next-auth/adapters";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { db } from "@/db";
 
 export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db) as Adapter,
@@ -15,6 +15,6 @@ export const authOptions: NextAuthOptions = {
   ],
 
   secret: process.env.AUTH_SECRET!,
-}
+};
 
 export const getServerAuthSession = () => getServerSession(authOptions);
