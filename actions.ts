@@ -1,12 +1,11 @@
 "use server";
 
-import { currentUser } from "@clerk/nextjs/server";
-
 import { createBetUsersAndWagers, resolveBet } from "./db/queries";
 import { InsertUser, InsertWager, bets, wagers } from "./db/schema";
 import { db } from "./db";
 import { desc, eq } from "drizzle-orm";
-import { dbIdFromClerkId } from "./clerkmetadata";
+
+import { getServerAuthSession } from "@/auth";
 
 export async function getBet(betId: number) {
   return await db.query.bets.findFirst({
@@ -17,14 +16,17 @@ export async function getBet(betId: number) {
     with: {
       wagers: {
         columns: {
-          betId: false,
-          userId: false,
+          amountUSD: true,
+          createdAt: true,
+          odds: true,
+          side: true,
+          updatedAt: true,
         },
         orderBy: [desc(wagers.createdAt)],
         with: {
           user: {
             columns: {
-              clerkId: false,
+              name: true,
             },
           },
         },
@@ -41,9 +43,9 @@ export interface Participant {
 }
 
 export async function updateBetResolutionFromBetPage(betId: number, resolution: number) {
-  const user = await currentUser();
-  if (!user) {
-    throw new Error("Unautorized");
+  const session = await getServerAuthSession();
+  if (!session) {
+    throw new Error("Unauthorized");
   }
 
   // TODO: remove once db enforces this with check constraint
@@ -51,7 +53,7 @@ export async function updateBetResolutionFromBetPage(betId: number, resolution: 
     throw new Error("Invalid resolution, must be 0, 1, or 2");
   }
 
-  await resolveBet(await dbIdFromClerkId(user), betId, resolution);
+  await resolveBet(session.user.id, betId, resolution);
 }
 
 export async function createBetAndWagerFromForm(
@@ -63,9 +65,9 @@ export async function createBetAndWagerFromForm(
   odds: number, // in whole percent e.g. 60%, NOT 60.5%
   participants: Participant[],
 ) {
-  const user = await currentUser();
-  if (!user) {
-    throw new Error("Unautorized");
+  const session = await getServerAuthSession();
+  if (!session) {
+    throw new Error("Unauthorized");
   }
 
   if (title.length === 0 || title.length > 4096) {
@@ -131,7 +133,7 @@ export async function createBetAndWagerFromForm(
   });
 
   return await createBetUsersAndWagers(
-    await dbIdFromClerkId(user),
+    session.user.id,
     {
       title,
       resolveDeadline,

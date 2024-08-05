@@ -1,23 +1,15 @@
 import BetForm from "@/components/BetForm";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
 import PastBets from "@/components/PastBets";
-import LandingPage from "@/components/LandingPage";
+
+import { getServerAuthSession } from "@/auth";
 
 export default async function Index() {
+  const session = await getServerAuthSession();
+
   return (
     <>
-
-<BetForm />
-
-      <SignedIn>
-        <PastBets />
-      </SignedIn>
+      <BetForm />
+      { session && <PastBets /> }
     </>
   );
 }

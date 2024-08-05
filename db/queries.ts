@@ -13,8 +13,7 @@ import { and, asc, desc, eq } from "drizzle-orm";
 
 // resolution: 0 = unresolved, 1 = affirmative, 2 = negative
 // make sure to check this input before calling this function
-export async function resolveBet(userId: number, betId: number, resolution: number) {
-// export async function resolveBet(userId: number, betId: number, resolution: number) {
+export async function resolveBet(userId: string, betId: number, resolution: number) {
   return await db.update(bets).set({
     resolved: resolution,
   }).where(and(
@@ -27,24 +26,32 @@ export async function resolveBet(userId: number, betId: number, resolution: numb
 export type BetInfoType = Awaited<ReturnType<typeof getUsersBetsAndWagers>>[number];
 
 // TODO: sort by creation or modified date
-export async function getUsersBetsAndWagers(userId: number) {
+export async function getUsersBetsAndWagers(userId: string) {
   return await db.query.bets.findMany({
     where: eq(bets.createdById, userId),
     columns: {
-      createdById: false,
+      createdAt: true,
+      id: true,
+      resolveDeadline: true,
+      resolved: true,
+      title: true,
+      updatedAt: true,
     },
     orderBy: [asc(bets.resolveDeadline)],
     with: {
       wagers: {
         columns: {
-          betId: false,
-          userId: false,
+          amountUSD: true,
+          createdAt: true,
+          odds: true,
+          side: true,
+          updatedAt: true,
         },
         orderBy: [desc(wagers.createdAt)],
         with: {
           user: {
             columns: {
-              clerkId: false,
+              name: true,
             },
           },
         },
@@ -60,23 +67,8 @@ export async function createUser(user: InsertUser) {
     .returning({ insertedId: users.id });
 }
 
-export async function updateUser({ name, clerkId }: InsertUser) {
-  return await db
-    .update(users)
-    .set({
-      name,
-    })
-    .where(eq(users.clerkId, clerkId!));
-}
-
-export async function deleteClerkUser(clerkId: string) {
-  return await db
-    .delete(users)
-    .where(eq(users.clerkId, clerkId));
-}
-
 export async function createBetUsersAndWagers(
-  userId: number, // creator of the bet also makes the initial wager
+  userId: string, // creator of the bet also makes the initial wager
   { title, resolveDeadline }: InsertBet,
   { amountUSD, side, odds }: InsertWager,
   participants: {
@@ -94,16 +86,20 @@ export async function createBetUsersAndWagers(
       })
       .returning({ insertedBetId: bets.id });
 
-    const participantUserIds = await tx
-      .insert(users)
-      .values(participants.map(({ user }) => user))
-      .returning({ insertedId: users.id });
+    let insertedWagers: InsertWager[] = [];
 
-    const insertedWagers: InsertWager[] = participants.map(({ wager }, ix) => ({
-      ...wager,
-      betId: insertedBetId,
-      userId: participantUserIds[ix].insertedId,
-    }));
+    if (participants.length > 0) {
+      const participantUserIds = await tx
+        .insert(users)
+        .values(participants.map(({ user }) => user))
+        .returning({ insertedId: users.id });
+
+      insertedWagers = participants.map(({ wager }, ix) => ({
+        ...wager,
+        betId: insertedBetId,
+        userId: participantUserIds[ix].insertedId,
+      }));
+    }
 
     // The bet creator's wager.
     insertedWagers.push({
