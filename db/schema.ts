@@ -7,7 +7,6 @@ import {
 } from "drizzle-orm/sqlite-core";
 
 const id = (name: string) => integer(name).primaryKey({ autoIncrement: true });
-const requiredName = (name: string) => text(name).notNull();
 
 const createdAt = integer("created_at", { mode: "timestamp" })
   .default(sql`(unixepoch())`)
@@ -52,7 +51,7 @@ export const bets = sqliteTable("bet", {
   createdAt,
   updatedAt,
 
-  title: requiredName("title"),
+  title: text("title", { length: 4096 } ).notNull(),
   resolveDeadline: integer("resolve_deadline", { mode: "timestamp" }).notNull(),
 
   resolved: integer("resolved", { mode: "number" }).default(0), // 0 = unresolved, 1 = negative, 2 = affirmative
