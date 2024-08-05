@@ -213,13 +213,9 @@ function BetFormInside() {
           </div>
         ))}
 
-        {session ? (
-          <Button type="submit" className="mx-auto my-4 h-12 w-full">
-            🤝 Open Bet
-          </Button>
-        ) : (
-          <Button className="mx-auto my-4 h-12 w-full">🤝 Signup to Bet</Button>
-        )}
+        <Button type="submit" className="mx-auto my-4 h-12 w-full">
+          {session.status === "authenticated" ? "🤝 Open Bet" : "🤝 Signup to Bet"}
+        </Button>
       </form>
 
       {showModal && (
