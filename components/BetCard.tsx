@@ -5,17 +5,17 @@ import { BetInfoType } from "@/db/queries";
 export default async function BetCard({ bet }: { bet: BetInfoType }) {
   const [resolveStatusText, resolveStatusColor] =
     bet.resolved === 0
-      ? ["Unresolved", "bg-orange-600"]
+      ? ["Unresolved", "bg-yellow-300"]
       : bet.resolved === 1
-        ? ["Resolved Negatively", "bg-red-600"]
-        : ["Resolved Affirmatively", "bg-green-600"];
+        ? ["Resolved Negatively", "bg-red-300"]
+        : ["Resolved Affirmatively", "bg-green-300"];
 
   const pot = bet.wagers.reduce((sum, wager) => sum + wager.amountUSD, 0);
 
   return (
     <div>
       <div className={`${resolveStatusColor} p-3`}>
-        <h2 className="text-xl font-bold text-white">{bet.title}</h2>
+        <h2 className="text-md font-bold">{bet.title}</h2>
       </div>
       <div className="p-6">
         <div className="mb-4 flex justify-between text-sm">

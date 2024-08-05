@@ -259,9 +259,9 @@ function BetFormInside() {
           <Button
             onClick={handleAddParticipant}
             color="bg-gray-200"
-            className="w-1/5"
+            className="w-1/2"
           >
-            + Add
+            + Add Participant
           </Button>
         </div>
 
