@@ -149,9 +149,10 @@ function BetFormInside() {
             required
           />
         </div>
+        <div className="flex">
 
-        <div className="mb-4 w-full sm:w-2/5">
-          <label className="mb-2 block font-bold text-gray-700">
+        <div className="mb-4 w-1/2 pl-2">
+            <label className="mb-2 block font-bold text-gray-700">
             Resolve by:
           </label>
           <input
@@ -187,6 +188,21 @@ function BetFormInside() {
             </button>
           </div>
         </div>
+
+        <div className="mb-4 w-1/2 pl-2">
+          <label className="block text-gray-700 font-bold mb-2">Add to group:</label>
+          <select
+            className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-gray-400 placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          >
+          
+            <option value="" className="text-gray-200">Select a Group</option>
+            <option value="friends">Friends</option>
+          </select>
+        </div>
+
+        </div>
+
+
 
         <h1 className="my-4 text-xl font-bold text-gray-800 sm:text-2xl">
           Your Bet
@@ -239,13 +255,13 @@ function BetFormInside() {
           </div>
         ))}
 
-        <div className="mb-4 justify-center">
+        <div className="mb-4 flex justify-center">
           <Button
             onClick={handleAddParticipant}
             color="bg-gray-200"
-            className="w-full"
+            className="w-1/5"
           >
-            + Add Another Participant
+            + Add
           </Button>
         </div>
 
