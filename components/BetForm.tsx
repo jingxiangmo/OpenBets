@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import BetInput from "./BetInput";
 import Button from "./Button";
 
@@ -43,13 +43,6 @@ function BetFormInside() {
     }
   }, []);
 
-  useEffect(() => {
-    // Auto-submit bet when user logs in
-    if (status === 'authenticated' && localStorage.getItem('cachedBetForm')) {
-      handleSubmit({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>);
-    }
-  }, [status]);
-
   const handleButtonClick = (button: string) => {
     setSelectedButton(button);
   };
@@ -60,40 +53,65 @@ function BetFormInside() {
     setResolveBy(currentDate.toISOString().split("T")[0]);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (status !== 'authenticated') {
-      // Cache form data and redirect to sign-in
-      const formData = { topic, resolveBy, selectedButton, wager, probability, participants };
-      localStorage.setItem('cachedBetForm', JSON.stringify(formData));
-      signIn("google");
-      return;
-    }
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (status !== "authenticated") {
+        // Cache form data and redirect to sign-in
+        const formData = {
+          topic,
+          resolveBy,
+          selectedButton,
+          wager,
+          probability,
+          participants,
+        };
+        localStorage.setItem("cachedBetForm", JSON.stringify(formData));
+        signIn("google");
+        return;
+      }
 
-    try {
-      const betId = await createBetAndWagerFromForm(
-        topic,
-        new Date(resolveBy),
-        parseInt(wager),
-        selectedButton === "yes",
-        probability as number,
-        participants,
-      );
+      try {
+        const betId = await createBetAndWagerFromForm(
+          topic,
+          new Date(resolveBy),
+          parseInt(wager),
+          selectedButton === "yes",
+          probability as number,
+          participants,
+        );
 
-      // Reset form fields and clear cache
-      resetForm();
-      localStorage.removeItem('cachedBetForm');
-      
-      // Show modal
-      setShowModal(true);
-      // Refresh the page after a short delay
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    } catch (error) {
-      console.error("Error creating bet:", error);
+        // Reset form fields and clear cache
+        resetForm();
+        localStorage.removeItem("cachedBetForm");
+
+        // Show modal
+        setShowModal(true);
+        // Refresh the page after a short delay
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } catch (error) {
+        console.error("Error creating bet:", error);
+      }
+    },
+    [
+      participants,
+      probability,
+      resolveBy,
+      selectedButton,
+      status,
+      topic,
+      wager,
+    ],
+  );
+
+  useEffect(() => {
+    // Auto-submit bet when user logs in
+    if (status === 'authenticated' && localStorage.getItem('cachedBetForm')) {
+      handleSubmit({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>);
     }
-  };
+  }, [status, handleSubmit]);
 
   const resetForm = () => {
     setTopic("");
