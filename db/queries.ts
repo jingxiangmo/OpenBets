@@ -13,17 +13,23 @@ import { and, asc, desc, eq } from "drizzle-orm";
 
 // resolution: 0 = unresolved, 1 = affirmative, 2 = negative
 // make sure to check this input before calling this function
-export async function resolveBet(userId: string, betId: number, resolution: number) {
-  return await db.update(bets).set({
-    resolved: resolution,
-  }).where(and(
-    eq(bets.id, betId),
-    eq(bets.createdById, userId),
-  ));
+export async function resolveBet(
+  userId: string,
+  betId: number,
+  resolution: number,
+) {
+  return await db
+    .update(bets)
+    .set({
+      resolved: resolution,
+    })
+    .where(and(eq(bets.id, betId), eq(bets.createdById, userId)));
 }
 
 // TODO: de-duplicate and make not terrifying
-export type BetInfoType = Awaited<ReturnType<typeof getUsersBetsAndWagers>>[number];
+export type BetInfoType = Awaited<
+  ReturnType<typeof getUsersBetsAndWagers>
+>[number];
 
 // TODO: sort by creation or modified date
 export async function getUsersBetsAndWagers(userId: string) {
@@ -56,8 +62,8 @@ export async function getUsersBetsAndWagers(userId: string) {
           },
         },
       },
-    }
-  })
+    },
+  });
 }
 
 export async function createUser(user: InsertUser) {
@@ -72,8 +78,8 @@ export async function createBetUsersAndWagers(
   { title, resolveDeadline }: InsertBet,
   { amountUSD, side, odds }: InsertWager,
   participants: {
-    user: InsertUser,
-    wager: InsertWager,
+    user: InsertUser;
+    wager: InsertWager;
   }[],
 ) {
   return await db.transaction(async (tx) => {

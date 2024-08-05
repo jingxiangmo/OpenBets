@@ -31,7 +31,9 @@ export default async function RootLayout({
                   WeShallSee.xyz
                 </Link>
                 {/* TODO: actually make these work */}
-                <div><AuthButton /></div>
+                <div>
+                  <AuthButton />
+                </div>
               </div>
             </nav>
             {children}
@@ -45,4 +47,3 @@ export default async function RootLayout({
     </html>
   );
 }
-

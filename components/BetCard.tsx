@@ -32,9 +32,7 @@ export default async function BetCard({ bet }: { bet: BetInfoType }) {
           </p>
         </div>
         <div className="mb-4">
-          <h3 className="mb-2 text-lg font-semibold">
-            Pot: ${pot}
-          </h3>
+          <h3 className="mb-2 text-lg font-semibold">Pot: ${pot}</h3>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="rounded-md bg-green-100 p-4">

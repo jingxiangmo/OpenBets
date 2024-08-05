@@ -26,19 +26,19 @@ function BetFormInside() {
   const [wager, setWager] = useState("");
   const [probability, setProbability] = useState<number | "">(""); // Added state for probability
   const [participants, setParticipants] = useState<Participant[]>([
-    { name: "", selectedButton: null, wager: "", probability: "" }
+    { name: "", selectedButton: null, wager: "", probability: "" },
   ]);
 
   useEffect(() => {
     // Load cached form data when component mounts
-    const cachedData = localStorage.getItem('cachedBetForm');
+    const cachedData = localStorage.getItem("cachedBetForm");
     if (cachedData) {
       const parsedData = JSON.parse(cachedData);
-      setTopic(parsedData.topic || '');
-      setResolveBy(parsedData.resolveBy || '');
+      setTopic(parsedData.topic || "");
+      setResolveBy(parsedData.resolveBy || "");
       setSelectedButton(parsedData.selectedButton || null);
-      setWager(parsedData.wager || '');
-      setProbability(parsedData.probability || '');
+      setWager(parsedData.wager || "");
+      setProbability(parsedData.probability || "");
       setParticipants(parsedData.participants || []);
     }
   }, []);
@@ -108,8 +108,10 @@ function BetFormInside() {
 
   useEffect(() => {
     // Auto-submit bet when user logs in
-    if (status === 'authenticated' && localStorage.getItem('cachedBetForm')) {
-      handleSubmit({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>);
+    if (status === "authenticated" && localStorage.getItem("cachedBetForm")) {
+      handleSubmit({
+        preventDefault: () => {},
+      } as React.FormEvent<HTMLFormElement>);
     }
   }, [status, handleSubmit]);
 
@@ -119,7 +121,9 @@ function BetFormInside() {
     setSelectedButton(null);
     setWager("");
     setProbability("");
-    setParticipants([{ name: "", selectedButton: null, wager: "", probability: "" }]);
+    setParticipants([
+      { name: "", selectedButton: null, wager: "", probability: "" },
+    ]);
   };
 
   const handleAddParticipant = () => {
@@ -168,59 +172,56 @@ function BetFormInside() {
           />
         </div>
         <div className="flex">
-
-        <div className="mb-4 w-1/2 pl-2">
+          <div className="mb-4 w-1/2 pl-2">
             <label className="mb-2 block font-bold text-gray-700">
-            Resolve by:
-          </label>
-          <input
-            type="date"
-            value={resolveBy}
-            onChange={(e) => setResolveBy(e.target.value)}
-            className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-            required
-            style={{ color: resolveBy === "" ? "#a0aec0" : "black" }}
-          />
+              Resolve by:
+            </label>
+            <input
+              type="date"
+              value={resolveBy}
+              onChange={(e) => setResolveBy(e.target.value)}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              required
+              style={{ color: resolveBy === "" ? "#a0aec0" : "black" }}
+            />
 
-          <div className="mt-2 flex justify-between">
-            <button
-              type="button"
-              onClick={() => handleDateAddition(1)}
-              className="text-sm font-medium text-blue-600 hover:text-blue-800"
-            >
-              1 day
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDateAddition(7)}
-              className="text-sm font-medium text-blue-600 hover:text-blue-800"
-            >
-              7 days
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDateAddition(90)}
-              className="text-sm font-medium text-blue-600 hover:text-blue-800"
-            >
-              90 days
-            </button>
+            <div className="mt-2 flex justify-between">
+              <button
+                type="button"
+                onClick={() => handleDateAddition(1)}
+                className="text-sm font-medium text-blue-600 hover:text-blue-800"
+              >
+                1 day
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDateAddition(7)}
+                className="text-sm font-medium text-blue-600 hover:text-blue-800"
+              >
+                7 days
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDateAddition(90)}
+                className="text-sm font-medium text-blue-600 hover:text-blue-800"
+              >
+                90 days
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-4 w-1/2 pl-2">
+            <label className="mb-2 block font-bold text-gray-700">
+              Add to group:
+            </label>
+            <select className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-gray-400 placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+              <option value="" className="text-gray-200">
+                Select a Group
+              </option>
+              <option value="friends">Friends</option>
+            </select>
           </div>
         </div>
-
-        <div className="mb-4 w-1/2 pl-2">
-          <label className="block text-gray-700 font-bold mb-2">Add to group:</label>
-          <select
-            className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-gray-400 placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-          >
-          
-            <option value="" className="text-gray-200">Select a Group</option>
-            <option value="friends">Friends</option>
-          </select>
-        </div>
-
-        </div>
-
-
 
         <h1 className="my-4 text-xl font-bold text-gray-800 sm:text-2xl">
           Your Bet
@@ -284,7 +285,7 @@ function BetFormInside() {
         </div>
 
         <Button type="submit" className="mx-auto my-4 h-12 w-full">
-          {status === 'authenticated' ? '🤝 Open Bet' : '🤝 Signup to Bet'}
+          {status === "authenticated" ? "🤝 Open Bet" : "🤝 Signup to Bet"}
         </Button>
       </form>
 
@@ -297,10 +298,7 @@ function BetFormInside() {
             <p className="mb-6 text-lg text-gray-600">
               Your bet has been submitted successfully.
             </p>
-            <Button
-              onClick={() => setShowModal(false)}
-              className="w-full"
-            >
+            <Button onClick={() => setShowModal(false)} className="w-full">
               Close
             </Button>
           </div>

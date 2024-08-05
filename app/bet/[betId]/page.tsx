@@ -39,12 +39,12 @@ export default function ViewBet({ params }: { params: { betId: string } }) {
   const handleResolve = async () => {
     if (resolveChoice === null) return;
     await updateBetResolutionFromBetPage(betId, resolveChoice);
-    setBets((prev) => prev ? { ...prev, resolved: resolveChoice } : prev);
+    setBets((prev) => (prev ? { ...prev, resolved: resolveChoice } : prev));
   };
 
   const handleUnresolve = async () => {
     await updateBetResolutionFromBetPage(betId, 0);
-    setBets((prev) => prev ? { ...prev, resolved: 0 } : prev);
+    setBets((prev) => (prev ? { ...prev, resolved: 0 } : prev));
     setResolveChoice(null);
   };
 
@@ -82,7 +82,12 @@ function LoadingSpinner() {
 }
 
 function BetHeader({ bet }: { bet: ClientBetInfo }) {
-  const statusColor = bet.resolved === 0 ? "bg-blue-600" : bet.resolved === 1 ? "bg-red-600" : "bg-green-600";
+  const statusColor =
+    bet.resolved === 0
+      ? "bg-blue-600"
+      : bet.resolved === 1
+        ? "bg-red-600"
+        : "bg-green-600";
   return (
     <div className={`mb-6 rounded-lg p-4 ${statusColor}`}>
       <h1 className="mb-2 text-3xl font-bold text-white">{bet.title}</h1>
@@ -103,7 +108,8 @@ function BetDetails({ bet }: { bet: ClientBetInfo }) {
     <div className="mb-6 rounded-lg bg-gray-50 p-4">
       <h2 className="mb-2 text-xl font-semibold">Bet Details</h2>
       <p className="text-lg">
-        <span className="font-medium">Odds:</span> {bet.affirmativePot} : {bet.negativePot}
+        <span className="font-medium">Odds:</span> {bet.affirmativePot} :{" "}
+        {bet.negativePot}
       </p>
       <p className="text-lg">
         <span className="font-medium">Pot:</span> ${bet.pot.toFixed(2)}
@@ -131,7 +137,13 @@ function CopyLinkButton() {
   );
 }
 
-function ResolveBetSection({ bet, resolveChoice, setResolveChoice, handleResolve, handleUnresolve }: {
+function ResolveBetSection({
+  bet,
+  resolveChoice,
+  setResolveChoice,
+  handleResolve,
+  handleUnresolve,
+}: {
   bet: ClientBetInfo;
   resolveChoice: number | null;
   setResolveChoice: (choice: number) => void;
@@ -195,7 +207,12 @@ function WagersList({ bet }: { bet: ClientBetInfo }) {
   );
 }
 
-function WagerColumn({ title, wagers, colorClass, textColorClass }: {
+function WagerColumn({
+  title,
+  wagers,
+  colorClass,
+  textColorClass,
+}: {
   title: string;
   wagers: any[];
   colorClass: string;
@@ -203,7 +220,9 @@ function WagerColumn({ title, wagers, colorClass, textColorClass }: {
 }) {
   return (
     <div className={`rounded-lg ${colorClass} p-6 shadow-md`}>
-      <h2 className={`mb-4 text-2xl font-semibold ${textColorClass}`}>{title}</h2>
+      <h2 className={`mb-4 text-2xl font-semibold ${textColorClass}`}>
+        {title}
+      </h2>
       <ul className="space-y-2">
         {wagers.map((wager, index) => (
           <li key={index} className="rounded bg-white p-3 shadow">

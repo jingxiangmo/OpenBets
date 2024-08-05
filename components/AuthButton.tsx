@@ -13,9 +13,10 @@ export default function AuthButton() {
 function AuthButtonInner() {
   const session = useSession();
 
-  const [authMessage, authFunc] = session.status === "authenticated"
-    ? ["Sign Out", signOut]
-    : ["Sign Up", () => signIn("google")];
+  const [authMessage, authFunc] =
+    session.status === "authenticated"
+      ? ["Sign Out", signOut]
+      : ["Sign Up", () => signIn("google")];
 
   return <button onClick={() => authFunc()}>{authMessage}</button>;
 }

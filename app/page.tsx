@@ -9,7 +9,7 @@ export default async function Index() {
   return (
     <>
       <BetForm />
-      { session && <PastBets /> }
+      {session && <PastBets />}
     </>
   );
 }

@@ -31,8 +31,8 @@ export async function getBet(betId: number) {
           },
         },
       },
-    }
-  })
+    },
+  });
 }
 
 export interface Participant {
@@ -42,7 +42,10 @@ export interface Participant {
   probability: number | "";
 }
 
-export async function updateBetResolutionFromBetPage(betId: number, resolution: number) {
+export async function updateBetResolutionFromBetPage(
+  betId: number,
+  resolution: number,
+) {
   const session = await getServerAuthSession();
   if (!session) {
     throw new Error("Unauthorized");
@@ -91,46 +94,48 @@ export async function createBetAndWagerFromForm(
     }
   }
 
-  const dbParticipants = participants.map(({ name, selectedButton, wager, probability }, ix) => {
-    const prefix = `Participant ${ix}`;
+  const dbParticipants = participants.map(
+    ({ name, selectedButton, wager, probability }, ix) => {
+      const prefix = `Participant ${ix}`;
 
-    if (name.length === 0 || name.length > 4096) {
-      throw new Error(`${prefix} name must be between 1 and 1024 characters`);
-    }
-
-    const partWager = parseInt(wager);
-    if (partWager <= 0) {
-      throw new Error(`${prefix} wager must be greater than 0`);
-    }
-
-    if (selectedButton !== "yes" && selectedButton !== "no") {
-      throw new Error(`${prefix} must be either "yes" or "no"`);
-    }
-    const partSide = selectedButton === "yes";
-
-    const partProb = probability as number;
-    if (partProb <= 0 || partProb > 100) {
-      throw new Error(`${prefix} probability must be between 0 and 100`);
-    }
-
-    if (probability) {
-      probability = Math.round(probability); // odds only in whole percent e.g. 60%, NOT 60.5%
-      if (probability < 0 || probability > 100) {
-        throw new Error(`${prefix} probability must be between 1 and 99`);
+      if (name.length === 0 || name.length > 4096) {
+        throw new Error(`${prefix} name must be between 1 and 1024 characters`);
       }
-    }
 
-    return {
-      user: {
-        name,
-      } satisfies InsertUser,
-      wager: {
-        amountUSD: partWager,
-        side: partSide,
-        odds: partProb,
-      } satisfies InsertWager,
-    }
-  });
+      const partWager = parseInt(wager);
+      if (partWager <= 0) {
+        throw new Error(`${prefix} wager must be greater than 0`);
+      }
+
+      if (selectedButton !== "yes" && selectedButton !== "no") {
+        throw new Error(`${prefix} must be either "yes" or "no"`);
+      }
+      const partSide = selectedButton === "yes";
+
+      const partProb = probability as number;
+      if (partProb <= 0 || partProb > 100) {
+        throw new Error(`${prefix} probability must be between 0 and 100`);
+      }
+
+      if (probability) {
+        probability = Math.round(probability); // odds only in whole percent e.g. 60%, NOT 60.5%
+        if (probability < 0 || probability > 100) {
+          throw new Error(`${prefix} probability must be between 1 and 99`);
+        }
+      }
+
+      return {
+        user: {
+          name,
+        } satisfies InsertUser,
+        wager: {
+          amountUSD: partWager,
+          side: partSide,
+          odds: partProb,
+        } satisfies InsertWager,
+      };
+    },
+  );
 
   return await createBetUsersAndWagers(
     session.user.id,

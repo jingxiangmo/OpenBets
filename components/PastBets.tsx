@@ -3,7 +3,7 @@ import Link from "next/link";
 import Button from "./Button";
 
 import { getUsersBetsAndWagers } from "@/db/queries";
-import { getServerAuthSession } from "@/auth"
+import { getServerAuthSession } from "@/auth";
 
 export default async function PastBets() {
   const session = await getServerAuthSession();
@@ -21,11 +21,8 @@ export default async function PastBets() {
         <p className="text-xl">No bets yet! Go bet your friends</p>
       ) : (
         bets.map((bet) => (
-          <Link
-            key={bet.id}
-            href={`/bet/${bet.id}`}
-          >
-            <Button color="bg-white" className="w-full" >
+          <Link key={bet.id} href={`/bet/${bet.id}`}>
+            <Button color="bg-white" className="w-full">
               <BetCard bet={bet} />
             </Button>
           </Link>
