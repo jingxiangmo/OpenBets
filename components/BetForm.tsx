@@ -168,6 +168,7 @@ function BetFormInside() {
             className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
             placeholder="Will Fraser and Guilia date by the end of 2024?"
             rows={2}
+            maxLength={4096}
             required
           />
         </div>

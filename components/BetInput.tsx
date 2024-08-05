@@ -35,6 +35,7 @@ const BetInput: React.FC<BetInputProps> = ({
             onChange={(e) => onNameChange(e.target.value)}
             className="mt-1 block w-full rounded-md border p-2 text-black placeholder-gray-300"
             placeholder="Enter name"
+            maxLength={4096}
             required
           />
         </div>
@@ -66,11 +67,12 @@ const BetInput: React.FC<BetInputProps> = ({
               $
             </span>
             <input
-              type="text"
+              type="number"
               value={wager}
               onChange={(e) => onWagerChange(e.target.value)}
               className="mt-1 block w-full rounded-md border border-gray-200 p-2 pl-7 text-black placeholder-gray-200 shadow-sm"
               placeholder="10"
+              min={1}
               required
             />
           </div>
@@ -88,8 +90,8 @@ const BetInput: React.FC<BetInputProps> = ({
             }
             className="mt-1 block w-full rounded-md border border-gray-200 p-2 pl-7 text-black placeholder-gray-200 shadow-sm"
             placeholder="(0-100)%"
-            min="0"
-            max="100"
+            min={0}
+            max={100}
             required
           />
         </div>
