@@ -4,7 +4,14 @@ import { useState } from "react";
 import BetInput from "./BetInput";
 import Button from "./Button";
 
-import { Participant, createBetAndWagerFromForm } from "../actions";
+import { createBetAndWagerFromForm } from "../actions";
+
+interface Participant {
+  name: string;
+  selectedButton: string | null;
+  wager: string;
+  probability: number | "";
+}
 
 import { SessionProvider, useSession } from "next-auth/react";
 
@@ -21,11 +28,14 @@ function BetFormInside() {
   const [showModal, setShowModal] = useState(false);
 
   const [topic, setTopic] = useState("");
+  const [resolveCondition, setResolveCondition] = useState("");
   const [resolveBy, setResolveBy] = useState("");
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [wager, setWager] = useState("");
   const [probability, setProbability] = useState<number | "">(""); // Added state for probability
-  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [participants, setParticipants] = useState<Participant[]>([{ name: "", selectedButton: null, wager: "", probability: "" }]);
+  const [group, setGroup] = useState("");
+  const [showResolveCondition, setShowResolveCondition] = useState(false);
 
   const handleButtonClick = (button: string) => {
     setSelectedButton(button);
@@ -56,6 +66,7 @@ function BetFormInside() {
 
       // Reset form fields
       setTopic("");
+      setResolveCondition("");
       setResolveBy("");
       setSelectedButton(null);
       setWager("");
@@ -117,42 +128,76 @@ function BetFormInside() {
             required
           />
         </div>
+        <div className="mb-4">
+          <div
+            className="mt-2 text-sm text-gray-500 underline cursor-pointer"
+            onClick={() => setShowResolveCondition(!showResolveCondition)}
+          >
+            {showResolveCondition ? "Hide Resolve Condition" : "Add Resolve Condition"}
+          </div>
+          {showResolveCondition && (
+            <div className="mt-4">
+              <label className="block text-gray-700 font-bold mb-2">Resolve Condition (Optional):</label>
+              <textarea
+                value={resolveCondition}
+                onChange={(e) => setResolveCondition(e.target.value)}
+                className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                placeholder="How will the bet be resolved?"
+                rows={2}
+                required
+              />
+            </div>
+          )}
+        </div>
 
-        <div className="mb-4 w-full sm:w-2/5">
-          <label className="mb-2 block font-bold text-gray-700">
-            Resolve by:
-          </label>
-          <input
-            type="date"
-            value={resolveBy}
-            onChange={(e) => setResolveBy(e.target.value)}
-            className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-            required
-            style={{ color: resolveBy === "" ? "#a0aec0" : "black" }}
-          />
+        <div className="flex">
+          <div className="mb-4 w-1/2 pl-2">
+            <label className="block text-gray-700 font-bold mb-2">Resolve by:</label>
+            <input
+              type="date"
+              value={resolveBy}
+              onChange={(e) => setResolveBy(e.target.value)}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              required
+              style={{ color: resolveBy === "" ? "#a0aec0" : "black" }}
+            />
 
-          <div className="mt-2 flex justify-between">
-            <button
-              type="button"
-              onClick={() => handleDateAddition(1)}
-              className="text-sm font-medium text-blue-600 hover:text-blue-800"
+            <div className="mt-2 flex justify-between">
+              <button
+                type="button"
+                onClick={() => handleDateAddition(1)}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                1 day
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDateAddition(7)}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                7 days
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDateAddition(90)}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                90 days
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-4 w-1/2 pl-2">
+            <label className="block text-gray-700 font-bold mb-2">Add to group:</label>
+            <select
+              value={group}
+              onChange={(e) => setGroup(e.target.value)}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+=
             >
-              1 day
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDateAddition(7)}
-              className="text-sm font-medium text-blue-600 hover:text-blue-800"
-            >
-              7 days
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDateAddition(90)}
-              className="text-sm font-medium text-blue-600 hover:text-blue-800"
-            >
-              90 days
-            </button>
+              <option value="">Select a group</option>
+              <option value="friends">Friends</option>
+            </select>
           </div>
         </div>
 
@@ -165,11 +210,12 @@ function BetFormInside() {
           selectedButton={selectedButton}
           wager={wager}
           probability={probability}
-          onNameChange={() => {}} // Not used for main user
+          onNameChange={() => {}} 
           onButtonClick={handleButtonClick}
           onWagerChange={setWager}
           onProbabilityChange={setProbability}
         />
+
 
         <div className="mb-4 justify-center">
           <Button
@@ -213,10 +259,27 @@ function BetFormInside() {
           </div>
         ))}
 
+
         <Button type="submit" className="mx-auto my-4 h-12 w-full">
           {session.status === "authenticated" ? "🤝 Open Bet" : "🤝 Signup to Bet"}
         </Button>
       </form>
+
+      <SignedIn>
+        <button type="submit" className="mx-auto my-4 h-12 w-full bg-gray-700 text-[#1e3050] m-2 p-0 rounded-md border-none">
+          <span className="block p-2.5 rounded-md border-none bg-yellow-300 transition-transform ease-linear -translate-y-1.5 duration-40 transform shadow hover:-translate-y-2 active:translate-y-0">
+            🤝 Open Bet
+          </span>
+        </button>
+      </SignedIn>
+
+      <SignedOut>
+        <SignUpButton>
+          <Button className="mx-auto my-4 h-12 w-full">
+            🤝 Signup to Bet
+          </Button>
+        </SignUpButton>
+      </SignedOut>
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
