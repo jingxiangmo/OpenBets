@@ -4,35 +4,28 @@ import { useState } from "react";
 import BetInput from "./BetInput";
 import Button from "./Button";
 
-import { createBetAndWagerFromForm } from "../actions";
-
-import { useAtom } from "jotai";
-
-import {
-  topicAtom,
-  resolveByAtom,
-  selectedButtonAtom,
-  wagerAtom,
-  probabilityAtom,
-  participantsAtom,
-} from "@/atoms";
+import { Participant, createBetAndWagerFromForm } from "../actions";
 
 import { SessionProvider, useSession } from "next-auth/react";
 
 export default function BetForm() {
-  return <SessionProvider><BetFormInside /></SessionProvider>;
+  return (
+    <SessionProvider>
+      <BetFormInside />
+    </SessionProvider>
+  );
 }
 
 function BetFormInside() {
   const session = useSession();
   const [showModal, setShowModal] = useState(false);
 
-  const [topic, setTopic] = useAtom(topicAtom);
-  const [resolveBy, setResolveBy] = useAtom(resolveByAtom);
-  const [selectedButton, setSelectedButton] = useAtom(selectedButtonAtom);
-  const [wager, setWager] = useAtom(wagerAtom);
-  const [probability, setProbability] = useAtom(probabilityAtom); // Added state for probability
-  const [participants, setParticipants] = useAtom(participantsAtom);
+  const [topic, setTopic] = useState("");
+  const [resolveBy, setResolveBy] = useState("");
+  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+  const [wager, setWager] = useState("");
+  const [probability, setProbability] = useState<number | "">(""); // Added state for probability
+  const [participants, setParticipants] = useState<Participant[]>([]);
 
   const handleButtonClick = (button: string) => {
     setSelectedButton(button);
@@ -225,9 +218,7 @@ function BetFormInside() {
             🤝 Open Bet
           </Button>
         ) : (
-          <Button className="mx-auto my-4 h-12 w-full">
-            🤝 Signup to Bet
-          </Button>
+          <Button className="mx-auto my-4 h-12 w-full">🤝 Signup to Bet</Button>
         )}
       </form>
 
@@ -275,4 +266,4 @@ function BetFormInside() {
       )}
     </div>
   );
-};
+}
