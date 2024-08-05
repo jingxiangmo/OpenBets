@@ -25,7 +25,9 @@ function BetFormInside() {
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [wager, setWager] = useState("");
   const [probability, setProbability] = useState<number | "">(""); // Added state for probability
-  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [participants, setParticipants] = useState<Participant[]>([
+    { name: "", selectedButton: null, wager: "", probability: "" }
+  ]);
 
   useEffect(() => {
     // Load cached form data when component mounts
@@ -99,7 +101,7 @@ function BetFormInside() {
     setSelectedButton(null);
     setWager("");
     setProbability("");
-    setParticipants([]);
+    setParticipants([{ name: "", selectedButton: null, wager: "", probability: "" }]);
   };
 
   const handleAddParticipant = () => {
@@ -201,15 +203,9 @@ function BetFormInside() {
           onProbabilityChange={setProbability}
         />
 
-        <div className="mb-4 justify-center">
-          <Button
-            onClick={handleAddParticipant}
-            color="bg-gray-200"
-            className="w-full"
-          >
-            + Add Participants
-          </Button>
-        </div>
+        <h1 className="my-4 text-xl font-bold text-gray-800 sm:text-2xl">
+          Participants
+        </h1>
 
         {participants.map((participant, index) => (
           <div key={index} className="mb-4 rounded-lg bg-gray-50 p-3 sm:p-4">
@@ -242,6 +238,16 @@ function BetFormInside() {
             />
           </div>
         ))}
+
+        <div className="mb-4 justify-center">
+          <Button
+            onClick={handleAddParticipant}
+            color="bg-gray-200"
+            className="w-full"
+          >
+            + Add Another Participant
+          </Button>
+        </div>
 
         <Button type="submit" className="mx-auto my-4 h-12 w-full">
           {status === 'authenticated' ? '🤝 Open Bet' : '🤝 Signup to Bet'}
