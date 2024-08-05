@@ -39,7 +39,7 @@ function BetFormInside() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!session) {
+    if (session.status !== "authenticated") {
       console.error("Session is not available");
       return;
     }
