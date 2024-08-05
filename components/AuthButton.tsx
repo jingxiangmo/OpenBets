@@ -14,8 +14,8 @@ function AuthButtonInner() {
   const session = useSession();
 
   const [authMessage, authFunc] = session.status === "authenticated"
-    ? ["Sign out", signOut]
-    : ["Sign in", () => signIn("google")];
+    ? ["Sign Out", signOut]
+    : ["Sign Up", () => signIn("google")];
 
   return <button onClick={() => authFunc()}>{authMessage}</button>;
 }

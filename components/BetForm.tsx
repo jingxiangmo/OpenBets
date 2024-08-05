@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BetInput from "./BetInput";
 import Button from "./Button";
 
 import { Participant, createBetAndWagerFromForm } from "../actions";
 
-import { SessionProvider, useSession } from "next-auth/react";
+import { SessionProvider, useSession, signIn } from "next-auth/react";
 
 export default function BetForm() {
   return (
@@ -17,7 +17,7 @@ export default function BetForm() {
 }
 
 function BetFormInside() {
-  const session = useSession();
+  const { data: session, status } = useSession();
   const [showModal, setShowModal] = useState(false);
 
   const [topic, setTopic] = useState("");
@@ -26,6 +26,27 @@ function BetFormInside() {
   const [wager, setWager] = useState("");
   const [probability, setProbability] = useState<number | "">(""); // Added state for probability
   const [participants, setParticipants] = useState<Participant[]>([]);
+
+  useEffect(() => {
+    // Load cached form data when component mounts
+    const cachedData = localStorage.getItem('cachedBetForm');
+    if (cachedData) {
+      const parsedData = JSON.parse(cachedData);
+      setTopic(parsedData.topic || '');
+      setResolveBy(parsedData.resolveBy || '');
+      setSelectedButton(parsedData.selectedButton || null);
+      setWager(parsedData.wager || '');
+      setProbability(parsedData.probability || '');
+      setParticipants(parsedData.participants || []);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Auto-submit bet when user logs in
+    if (status === 'authenticated' && localStorage.getItem('cachedBetForm')) {
+      handleSubmit({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>);
+    }
+  }, [status]);
 
   const handleButtonClick = (button: string) => {
     setSelectedButton(button);
@@ -39,8 +60,11 @@ function BetFormInside() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (session.status !== "authenticated") {
-      console.error("Session is not available");
+    if (status !== 'authenticated') {
+      // Cache form data and redirect to sign-in
+      const formData = { topic, resolveBy, selectedButton, wager, probability, participants };
+      localStorage.setItem('cachedBetForm', JSON.stringify(formData));
+      signIn("google");
       return;
     }
 
@@ -54,13 +78,10 @@ function BetFormInside() {
         participants,
       );
 
-      // Reset form fields
-      setTopic("");
-      setResolveBy("");
-      setSelectedButton(null);
-      setWager("");
-      setProbability(""); // Reset probability
-      setParticipants([]);
+      // Reset form fields and clear cache
+      resetForm();
+      localStorage.removeItem('cachedBetForm');
+      
       // Show modal
       setShowModal(true);
       // Refresh the page after a short delay
@@ -70,6 +91,15 @@ function BetFormInside() {
     } catch (error) {
       console.error("Error creating bet:", error);
     }
+  };
+
+  const resetForm = () => {
+    setTopic("");
+    setResolveBy("");
+    setSelectedButton(null);
+    setWager("");
+    setProbability("");
+    setParticipants([]);
   };
 
   const handleAddParticipant = () => {
@@ -214,7 +244,7 @@ function BetFormInside() {
         ))}
 
         <Button type="submit" className="mx-auto my-4 h-12 w-full">
-          {session.status === "authenticated" ? "🤝 Open Bet" : "🤝 Signup to Bet"}
+          {status === 'authenticated' ? '🤝 Open Bet' : '🤝 Signup to Bet'}
         </Button>
       </form>
 
