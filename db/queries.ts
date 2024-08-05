@@ -37,7 +37,7 @@ export async function getUsersBetsAndWagers(userId: string) {
       title: true,
       updatedAt: true,
     },
-    orderBy: [asc(bets.resolveDeadline)],
+    orderBy: [desc(bets.createdAt)],
     with: {
       wagers: {
         columns: {
