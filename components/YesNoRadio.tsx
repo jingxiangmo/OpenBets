@@ -32,7 +32,7 @@ export default function YesNoRadio({
     >
       <input
         id={yesId}
-        className="peer size-0"
+        className="absolute opacity-0"
         type="radio"
         name="yesnoradio"
         checked={choice === "yes"}
@@ -41,7 +41,7 @@ export default function YesNoRadio({
       />
       <input
         id={noId}
-        className="size-0"
+        className="absolute opacity-0"
         type="radio"
         name="yesnoradio"
         checked={choice === "no"}
@@ -68,10 +68,6 @@ export default function YesNoRadio({
           ❌ No
         </span>
       </label>
-
-      <p className="invisible col-span-2 peer-invalid:visible peer-invalid:text-pink-600">
-        Please choose yes or no
-      </p>
     </div>
   );
 }
