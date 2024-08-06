@@ -7,6 +7,8 @@ import { desc, eq } from "drizzle-orm";
 
 import { getServerAuthSession } from "@/auth";
 
+import { Choice } from "@/components/YesNoRadio";
+
 export async function getBet(betId: number) {
   return await db.query.bets.findFirst({
     where: eq(bets.id, betId),
@@ -37,7 +39,7 @@ export async function getBet(betId: number) {
 
 export interface Participant {
   name: string;
-  selectedButton: string | null;
+  selectedButton: Choice;
   wager: string;
   probability: number | "";
 }

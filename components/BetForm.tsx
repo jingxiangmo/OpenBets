@@ -8,6 +8,8 @@ import { Participant, createBetAndWagerFromForm } from "../actions";
 
 import { SessionProvider, useSession, signIn } from "next-auth/react";
 
+import { Choice } from "./YesNoRadio";
+
 export default function BetForm() {
   return (
     <SessionProvider>
@@ -22,7 +24,7 @@ function BetFormInside() {
 
   const [topic, setTopic] = useState("");
   const [resolveBy, setResolveBy] = useState("");
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+  const [selectedButton, setSelectedButton] = useState<Choice>(null);
   const [wager, setWager] = useState("");
   const [probability, setProbability] = useState<number | "">(""); // Added state for probability
   const [participants, setParticipants] = useState<Participant[]>([
@@ -43,7 +45,7 @@ function BetFormInside() {
     }
   }, []);
 
-  const handleButtonClick = (button: string) => {
+  const handleButtonClick = (button: Choice) => {
     setSelectedButton(button);
   };
 

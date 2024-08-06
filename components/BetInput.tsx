@@ -1,20 +1,20 @@
 import React from "react";
 import Button from "./Button";
 
+import YesNoRadio, { Choice } from "./YesNoRadio";
+
 interface BetInputProps {
   name: string;
-  selectedButton: string | null;
+  selectedButton: Choice;
   wager: string;
   probability: number | "";
   onNameChange: (value: string) => void;
-  onButtonClick: (button: string) => void;
+  onButtonClick: (button: Choice) => void;
   onWagerChange: (value: string) => void;
   onProbabilityChange: (value: number | "") => void;
   showName?: boolean;
   ix?: number;
 }
-
-import YesNoRadio, { Choice } from "./YesNoRadio";
 
 const BetInput: React.FC<BetInputProps> = ({
   ix,
@@ -47,8 +47,8 @@ const BetInput: React.FC<BetInputProps> = ({
 
       <YesNoRadio
         ix={ix}
-        choice={selectedButton as Choice}
-        setChoice={onButtonClick as (choice: Choice) => void}
+        choice={selectedButton}
+        setChoice={onButtonClick}
       />
       <div className="mb-3 flex">
         <div className="mb-4 w-1/2 pr-2">
