@@ -170,6 +170,11 @@ function BetFormInside() {
     }
   };
 
+  const handleRemoveParticipant = (index: number) => {
+    setParticipants(participants.filter((_, i) => i !== index));
+    setParticipantValidations(prev => prev.filter((_, i) => i !== index));
+  };
+
   return (
     <div className="mx-auto w-full px-4 sm:w-3/4 sm:px-8 md:w-2/3 lg:w-1/2">
       <h2 className="mb-6 text-3xl font-bold text-gray-800 sm:text-4xl">
@@ -296,6 +301,14 @@ function BetFormInside() {
               }
               showName={true}
             />
+
+            <button
+              type="button"
+              onClick={() => handleRemoveParticipant(index)}
+              className="mt-2 text-sm font-medium text-gray-400 hover:text-red-800"
+            >
+              Remove
+            </button>
           </div>
         ))}
 
