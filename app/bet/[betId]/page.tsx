@@ -34,7 +34,7 @@ export default function ViewBet({ params }: { params: { betId: string } }) {
   }, [betId]);
 
   if (isNaN(betId)) return <div>Invalid bet ID</div>;
-  if (!bets) return <LoadingSpinner />;
+  if (!bets) return <LoadingIndicator />;
 
   const handleResolve = async () => {
     if (resolveChoice === null) return;
@@ -73,10 +73,10 @@ export default function ViewBet({ params }: { params: { betId: string } }) {
   );
 }
 
-function LoadingSpinner() {
+function LoadingIndicator() {
   return (
     <div className="flex h-screen items-center justify-center">
-      <div className="h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+      <p className="text-xl font-semibold">Loading...</p>
     </div>
   );
 }
