@@ -231,6 +231,7 @@ function BetFormInside() {
         </h1>
 
         <BetInput
+          ix={-1}
           name=""
           selectedButton={selectedButton}
           wager={wager}

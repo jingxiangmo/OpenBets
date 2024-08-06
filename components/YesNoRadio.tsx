@@ -7,13 +7,13 @@ export type Choice = "yes" | "no" | null;
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   choice: Choice;
   setChoice: (choice: Choice) => void;
-  ix?: number;
+  ix: number;
 };
 
 // TODO: unique ids for the radio buttons
 
 export default function YesNoRadio({
-  ix = -1,
+  ix,
   choice,
   setChoice,
   className,

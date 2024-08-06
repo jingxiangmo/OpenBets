@@ -13,7 +13,7 @@ interface BetInputProps {
   onWagerChange: (value: string) => void;
   onProbabilityChange: (value: number | "") => void;
   showName?: boolean;
-  ix?: number;
+  ix: number;
 }
 
 const BetInput: React.FC<BetInputProps> = ({
