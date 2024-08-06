@@ -49,7 +49,7 @@ export default function YesNoRadio({
         required
       />
       <label
-        className="pe m-2 w-full rounded-md border-none bg-gray-700 p-0 text-[#1e3050]"
+        className="m-2 w-full rounded-md border-none bg-gray-700 p-0 text-[#1e3050]"
         htmlFor={yesId}
       >
         <span
@@ -59,7 +59,7 @@ export default function YesNoRadio({
         </span>
       </label>
       <label
-        className="pe m-2 w-full rounded-md border-none bg-gray-700 p-0 text-[#1e3050]"
+        className="m-2 w-full rounded-md border-none bg-gray-700 p-0 text-[#1e3050]"
         htmlFor={noId}
       >
         <span
