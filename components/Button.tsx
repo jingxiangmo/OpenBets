@@ -22,7 +22,7 @@ export default function Button({
     >
       <span
         className={twMerge(
-          `duration-40 block -translate-y-1.5 transform rounded-md border-none p-2.5 shadow transition-transform ease-linear hover:-translate-y-2 active:translate-y-0`,
+          "duration-40 block -translate-y-1.5 transform rounded-md border-none p-2.5 shadow transition-transform ease-linear hover:-translate-y-2 active:translate-y-0",
           color,
         )}
       >
