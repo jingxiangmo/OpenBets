@@ -30,6 +30,7 @@ function BetFormInside() {
   const [participants, setParticipants] = useState<Participant[]>([
     { name: "", selectedButton: null, wager: "", probability: "" },
   ]);
+  const [participantValidations, setParticipantValidations] = useState<boolean[]>([false]);
 
   useEffect(() => {
     // Load cached form data when component mounts
@@ -73,6 +74,14 @@ function BetFormInside() {
         return;
       }
 
+      // Check if all participants have selected a radio button
+      participants.forEach((participant, index) => {
+        if (!participant.selectedButton) {
+          alert(`Please select Yes or No for Participant ${index + 1}.`);
+          return;
+        }
+      });
+
       try {
         const betId = await createBetAndWagerFromForm(
           topic,
@@ -105,6 +114,7 @@ function BetFormInside() {
       status,
       topic,
       wager,
+      participantValidations,
     ],
   );
 
@@ -126,6 +136,7 @@ function BetFormInside() {
     setParticipants([
       { name: "", selectedButton: null, wager: "", probability: "" },
     ]);
+    setParticipantValidations([false]);
   };
 
   const handleAddParticipant = () => {
@@ -133,6 +144,7 @@ function BetFormInside() {
       ...participants,
       { name: "", selectedButton: null, wager: "", probability: "" },
     ]);
+    setParticipantValidations(prev => [...prev, false]);
   };
 
   const handleParticipantChange = (
@@ -148,6 +160,14 @@ function BetFormInside() {
         return participant;
       }),
     );
+
+    if (field === "selectedButton") {
+      setParticipantValidations(prev => {
+        const newValidations = [...prev];
+        newValidations[index] = value !== null;
+        return newValidations;
+      });
+    }
   };
 
   return (
