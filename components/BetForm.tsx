@@ -250,6 +250,7 @@ function BetFormInside() {
             </h1>
 
             <BetInput
+              ix={index}
               name={participant.name}
               selectedButton={participant.selectedButton}
               wager={participant.wager}

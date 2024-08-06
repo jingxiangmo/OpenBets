@@ -11,9 +11,13 @@ interface BetInputProps {
   onWagerChange: (value: string) => void;
   onProbabilityChange: (value: number | "") => void;
   showName?: boolean;
+  ix?: number;
 }
 
+import YesNoRadio, { Choice } from "./YesNoRadio";
+
 const BetInput: React.FC<BetInputProps> = ({
+  ix,
   name,
   selectedButton,
   wager,
@@ -41,24 +45,11 @@ const BetInput: React.FC<BetInputProps> = ({
         </div>
       )}
 
-      <div className="mb-4 flex">
-        <Button
-          onClick={() => onButtonClick("yes")}
-          color={selectedButton === "yes" ? "bg-green-500" : "bg-green-50"}
-          className="m-1 w-1/2"
-        >
-          ✅ Yes
-        </Button>
-
-        <Button
-          onClick={() => onButtonClick("no")}
-          color={selectedButton === "no" ? "bg-red-500" : "bg-red-50"}
-          className="m-1 w-1/2"
-        >
-          ❌ No
-        </Button>
-      </div>
-
+      <YesNoRadio
+        ix={ix}
+        choice={selectedButton as Choice}
+        setChoice={onButtonClick as (choice: Choice) => void}
+      />
       <div className="mb-3 flex">
         <div className="mb-4 w-1/2 pr-2">
           <label className="block text-black">Wager ($):</label>
