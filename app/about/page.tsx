@@ -6,7 +6,7 @@ export default function About() {
       <h1 className="mb-4 text-3xl font-bold">About WeShallSee.xyz</h1>
 
       <p className="mb-4">
-        From romance to current events, and politics to trivia, WeShallSee.xyz lets you and your friends create bets and track outcomes. Our goal is to provide a game for friends to challenge each other's predictions and put their money where their mouth is.
+        From ro to current events, and politics to trivia, WeShallSee.xyz is a game that lets you and your friends create bets and track outcomes. Our goal is to provide a game for friends to challenge each other's predictions and put their money where their mouth is.
       </p>
 
       <p className="mb-10">
