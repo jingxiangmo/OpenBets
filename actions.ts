@@ -91,7 +91,7 @@ export async function createBetAndWagerFromForm(
 
   if (odds) {
     odds = Math.round(odds); // odds only in whole percent e.g. 60%, NOT 60.5%
-    if (odds < 0 || odds > 100) {
+    if (odds <= 0 || odds >= 100) {
       throw new Error("Odds must be between 1 and 99");
     }
   }
@@ -115,7 +115,7 @@ export async function createBetAndWagerFromForm(
       const partSide = selectedButton === "yes";
 
       const partProb = probability as number;
-      if (partProb <= 0 || partProb > 100) {
+      if (partProb <= 0 || partProb >= 100) {
         throw new Error(`${prefix} probability must be between 0 and 100`);
       }
 

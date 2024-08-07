@@ -80,9 +80,10 @@ const BetInput: React.FC<BetInputProps> = ({
               )
             }
             className="mt-1 block w-full rounded-md border border-gray-200 p-2 pl-7 text-black placeholder-gray-200 shadow-sm"
-            placeholder="(0-100)%"
-            min={0}
-            max={100}
+            placeholder="(1-99)%"
+            min={1}
+            max={99}
+            step={1}
             required
           />
         </div>
