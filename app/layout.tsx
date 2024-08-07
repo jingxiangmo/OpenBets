@@ -2,6 +2,7 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import Link from "next/link";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import AuthButton from "@/components/AuthButton";
 
@@ -55,6 +56,7 @@ export default async function RootLayout({
           </div>
         </main>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
