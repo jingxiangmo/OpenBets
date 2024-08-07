@@ -30,8 +30,10 @@ export default async function RootLayout({
                 <Link href="/" className="text-xl">
                   WeShallSee.xyz
                 </Link>
-                {/* TODO: actually make these work */}
-                <div>
+                <div className="flex items-center space-x-4">
+                  <Link href="/about" className="hover:underline">
+                    About
+                  </Link>
                   <AuthButton />
                 </div>
               </div>
