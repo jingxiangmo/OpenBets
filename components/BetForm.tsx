@@ -114,7 +114,6 @@ function BetFormInside() {
       status,
       topic,
       wager,
-      participantValidations,
     ],
   );
 
